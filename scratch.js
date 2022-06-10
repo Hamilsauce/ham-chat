@@ -48,7 +48,7 @@ export class AppView extends EventEmitter {
 
   renderMessages(msgs) {
     if (!msgs) return;
- console.warn('MSGS', msgs)
+    console.warn('MSGS', msgs)
     this.messageBoxEl.innerHTML = `
       ${
         msgs.reduce((template, curr) => {

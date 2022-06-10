@@ -152,7 +152,7 @@ class FirestoreService {
       ).get()).docs
       .map((ch, i) => {
         const d =  ch.data();
-        d.createdDate = new Date(d.createdDate).toDateString()
+        d.createdDate = `${new Date(d.createdDate).toLocaleDateString()} ${new Date(d.createdDate).toLocaleTimeString()}`
      return d
       });
 
