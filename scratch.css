@@ -88,6 +88,7 @@ padding: 8px;
   background: #292F62B8;
   color: #EBEBED;
   border-radius: 6px;
+  overflow: hidden;
 }
 .message:active {
   background: #A3B9D0;

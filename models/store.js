@@ -3,15 +3,28 @@ import { messagesSeed } from '../data/message-seed.js';
 import { coerceData } from '../lib/coerce.js';
 import { localStore } from '../datastore/localStore.service.js';
 import { Firestore } from '../firebase/FirestoreService.js';
+
+const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, interval, of , fromEvent, merge, empty, delay, from } = rxjs;
+const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
+const { fromFetch } = rxjs.fetch;
+
+
 const jakeId = '6eCKrY70mvt5lDK0q42c';
 
 const initialState = {
   ...messagesSeed,
 };
 
+
 class Store extends EventEmitter {
   constructor() {
     super();
+    this.messageStream$ = Firestore.messages$
+      .pipe(
+        tap(msg => msg.createdDate = `${new Date(msg.createdDate).toLocaleDateString()} ${new Date(msg.createdDate).toLocaleTimeString()}`),
+    tap(x => console.log('x', x)),
+      );
+
     this.storeKey = 'chatApp';
     this.state = {
       currentUser: {
@@ -43,18 +56,21 @@ class Store extends EventEmitter {
       this.state.activeChat = (await userchat.get()).data()
       userchat = (await userchat.get()).data()
       this.setActiveChat(userchat.id)
-      
+
       return this;
     } else {
-      Firestore.addUser({username: un })
+      Firestore.addUser({ username: un })
       let userchat = (await this.state.currentUser.chatrooms[0]) //.get()).data()
       this.state.activeChat = (await userchat.get()).data()
       userchat = (await userchat.get()).data()
       this.setActiveChat(userchat.id)
-      
+
       return this;
     }
-    
+  }
+
+  startMessageStream(roomid) {
+    Firestore.listenOnMessages(roomid)
   }
 
   async setActiveChat(roomId) {
@@ -92,6 +108,7 @@ class Store extends EventEmitter {
 
   async getMessages(chatId) {
     this.state.activeChat.messages = await Firestore.getMessages(chatId) //(this.activeChat.id, msg)
+    this.startMessageStream(chatId)
     this.emit('messages:update', this.state.activeChat.messages)
   }
 

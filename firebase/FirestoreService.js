@@ -14,6 +14,9 @@ class FirestoreService {
 
     this.chatrooms = this.db.collection('chatrooms')
 
+    this.messages$ = new BehaviorSubject([]);
+
+
     this.fsFolders$ = new Subject();
     this.fsFiles$ = new Subject();
 
@@ -37,36 +40,6 @@ class FirestoreService {
   get Timestamp() {
     return this.db.app.firebase_.firestore.Timestamp
   }
-  paginate(collectionName, orderField) {
-    let cn = collectionName
-    let field = orderField
-    let firstDoc;
-    let lastDoc;
-    // [START paginate]
-    let query = ref => ref.orderBy(field).limit(pageSize);
-
-    function nextPage(last) {
-      query = ref => ref.orderBy(field).startAfter(last[field]).limit(pageSize);
-    }
-
-    function prevPage(first) {
-      query = ref => ref.orderBy(field).endBefore(first[field]).limitToLast(pageSize);
-    }
-
-    const first = this.db.collection(collectionName)
-      .orderBy('name')
-      .limit(26);
-
-    return first.get().then((documentSnapshots) => {
-
-      var lastVisible = documentSnapshots.docs[documentSnapshots.docs.length - 1];
-
-      var next = db.collection(collectionName)
-        .startAfter(lastVisible)
-        .limit(26);
-    })
-  }
-
 
   async file(id) { return await this.files.doc(id) }
 
@@ -90,9 +63,9 @@ class FirestoreService {
     // msg.id = msg.id ? msg.id : utils.uuid()
     // msg.createdDate = this.Timestamp.now()
 
-    user = {...user,chatrooms:['chatrooms/TNup80srmvCs3pwrP8sX']}
+    user = { ...user, chatrooms: ['chatrooms/TNup80srmvCs3pwrP8sX'] }
     user = (await this.users.add(user))
-   
+
     // .set(msg);
     // console.warn(await this.chatrooms.doc(chatId).collection('messages').doc().set(msg))
     // const chat = await (await this.chatrooms
@@ -108,27 +81,9 @@ class FirestoreService {
     // console.log('chatMsgs', chatMsgs)
     // return this.activeChat.
   }
-  
+
   async addMessage(chatId, msg) {
-    // console.log('MODEL', msg);
-    // msg.id = msg.id ? msg.id : utils.uuid()
-    // msg.createdDate = this.Timestamp.now()
-
     const res = (await this.chatrooms.doc(chatId).collection('messages').add(msg)) //.get())
-    // .set(msg);
-    // console.warn(await this.chatrooms.doc(chatId).collection('messages').doc().set(msg))
-    // const chat = await (await this.chatrooms
-    //   .where('name', '==', chatName)
-    // );
-
-    // const chatMsgs = await (
-    //   await db.collection('/chatrooms/TNup80srmvCs3pwrP8sX/messages').get()
-    // ).docs.map((ch, i) => {
-    //   return ch.data()
-    // });
-
-    // console.log('chatMsgs', chatMsgs)
-    // return this.activeChat.
   }
 
   async getChatroomById(chatId) {
@@ -137,7 +92,7 @@ class FirestoreService {
 
     return chat
   }
-  
+
   async getChatroomByName(chatName) {
     const chat = await (await this.chatrooms
       .where('name', '==', chatName)
@@ -147,50 +102,33 @@ class FirestoreService {
 
   async getMessages(chatId) {
     const msgs = (await (
-        await this.chatrooms.doc(chatId).collection('messages')
-        .orderBy('createdDate', 'asc')
+        await this.chatrooms.doc(chatId).collection('messages').orderBy('createdDate', 'asc')
       ).get()).docs
       .map((ch, i) => {
-        const d =  ch.data();
-        d.createdDate = `${new Date(d.createdDate).toLocaleDateString()} ${new Date(d.createdDate).toLocaleTimeString()}`
-     return d
+        return ch.data();
+        return d
       });
 
     console.warn('getMessages', { msgs });
     return msgs
   }
 
-  getFolderChildrenSnap(doc) {
-    let folder = doc
-    folder.children = []
-    let allChildren = []
-    let folderChildren = this.folders
-      .where('parentId', '==', folder.id)
+  listenOnMessages(chatId) {
+    this.messageListener = this.chatrooms.doc(chatId).collection('messages').orderBy('createdDate', 'asc')
 
-    let fileChildren = this.files
-      .where('parentId', '==', folder.id)
+    this.messageListener.onSnapshot(snap => {
 
-    folderChildren.onSnapshot(collSnap => {
-      collSnap.docs.forEach(doc => {
-        this.fsFolders$.next(doc.data())
-      })
-    })
+      const msgs =
+        snap.docs.map(doc => {
+          const d = doc.data();
+          d.createdDate = `${new Date(d.createdDate).toLocaleDateString()} ${new Date(d.createdDate).toLocaleTimeString()}`
+     return d
+        });
+        
+      this.messages$.next(msgs)
+    });
 
-    fileChildren.onSnapshot(collSnap => {
-
-      collSnap.docs.forEach(doc => {
-        this.fsFiles$.next(doc.data())
-      })
-
-
-      //   folder.children = [
-      //   ...folder.children,
-      //   ...collSnap.docs.map(doc => ({
-      //       ...doc.data(),
-      //     }))
-      // ]
-    })
-
+    return this.messages$;
   }
 
   getChildren(arrayOfIds) {}

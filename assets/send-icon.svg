@@ -1,0 +1,12 @@
+<svg id="send-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="50" height="50" viewBox="0 0 28 28">
+  <g id="icon-shape">
+    <polygon points="
+    32,8
+    16,33
+    20,33
+    32,384
+    33,33
+    33,33
+  " />
+  </g>
+</svg>
