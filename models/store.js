@@ -22,7 +22,6 @@ class Store extends EventEmitter {
     this.messageStream$ = Firestore.messages$
       .pipe(
         tap(msg => msg.createdDate = `${new Date(msg.createdDate).toLocaleDateString()} ${new Date(msg.createdDate).toLocaleTimeString()}`),
-    tap(x => console.log('x', x)),
       );
 
     this.storeKey = 'chatApp';

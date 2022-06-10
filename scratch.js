@@ -11,8 +11,6 @@ const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, inter
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 const { fromFetch } = rxjs.fetch;
 
-console.log({ db });
-console.log(localStorage);
 
 // const vueapp = createApp({
 //   data() {
@@ -37,22 +35,16 @@ export class AppView extends EventEmitter {
     this.store.registerListener('chat:loaded', this.handleChatLoaded.bind(this))
     this.inputBar.registerListener('message:send', this.handleMessageSent.bind(this))
     this.loginModal.registerListener('login', this.handleLogin.bind(this))
-    // this.renderMessages(this.store.messages)
+
     this.viewCache = {
       chat: null
     }
+    
     this.messages$ = this.store.messageStream$
       .pipe(
-        // map(x => x),
-        // toArray(),
-        tap(x => console.warn('APP VIEW messageStream$', x)),
         map(this.renderMessages.bind(this)),
       )
       .subscribe()
-
-    console.warn('store in App', this.store.messages)
-    // document.addEventListener('login', this.handleLogin.bind(this))
-
   }
 
   get messageEls() { return [...this.messageBoxEl.querySelectorAll('.message')] }
@@ -64,7 +56,7 @@ export class AppView extends EventEmitter {
 
   renderMessages(msgs) {
     if (!msgs) return;
-    console.warn('MSGS', msgs)
+    
     this.messageBoxEl.innerHTML = `${
         msgs.reduce((template, curr) => {
           return `${template}
@@ -75,14 +67,11 @@ export class AppView extends EventEmitter {
           </div>`;
         },'')
       }`;
+      
     setTimeout(() => {
-      console.log(' ', );
-    if (this.lastMessageEl) {
-      this.lastMessageEl.scrollIntoView({behavior: 'smooth'}) ;
-    }
-   console.warn('this.lastMessageEl', this.lastMessageEl)
-   console.warn('this.messageEls', this.messageEls)
-    
+      if (this.lastMessageEl) {
+        this.lastMessageEl.scrollIntoView({ behavior: 'smooth' });
+      }
     }, 100)
   }
 
@@ -102,26 +91,16 @@ export class AppView extends EventEmitter {
   // }
 
   handleMessageSent(msg) {
-    console.warn('messsage heard in App', { msg });
     this.store.addMessage({ text: msg })
   }
 
-  handleChatLoaded(chat) {
-    console.warn('handleChatLoaded', { chat });
-    // this.renderMessages(chat.messages)
-  }
+  handleChatLoaded(chat) {}
 
   async handleLogin(username) {
-    console.warn('handleLogin heard in App', { username });
     this.currentUser = await this.store.logUserIn(username)
-    console.warn('this.currentUser', this.currentUser);
   }
 
-  handleMessagesUpdate(messages) {
-    console.warn('handle Messages Update heard in App', { messages });
-    // this.renderMessages(messages)
-    // this.messageBoxEl.children[this.messageBoxEl.children.length - 1].scrollIntoView({ behavior: 'smooth' })
-  }
+  handleMessagesUpdate(messages) {}
 }
 
 const chatApp = new AppView();
@@ -129,5 +108,4 @@ const chatApp = new AppView();
 setTimeout(() => {
   // chatApp.toggleLogin()
 
-  console.log(' ', );
 }, 1500)

@@ -15,7 +15,7 @@ export class LoginModal extends EventEmitter {
     this.dimmer.id = 'modalDimmer'
     this.usernameInput = document.createElement('input');
     this.usernameInput.type = 'text';
-    this.usernameInput.value = 'jake';
+    this.usernameInput.value = 'cooluser1';
     this.usernameInput.id = 'usernameInput'
     this.loginSubmit = document.createElement('input');
     this.usernameLabel = document.createElement('label');
