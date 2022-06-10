@@ -8,23 +8,177 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <title>chat</title>
+  <title>chat scratch</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="./scratch.css" />
 </head>
 
 <body>
-  <main id="app">
-    <header id="appHeader">Room Name</header>
+  <div id="app">
+    <header id="appHeader">
+      <h2 class="container">poop chat</h2>
+    </header>
     <section id="appBody">
-      <div id="container">
-        messages
+      <div id="chatMessages" class="container">
+        <div class="message">
+          <div class="messageTop">
+            Cool User
+          </div>
+          <div class="messageMiddle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="messageBottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+        <div class="message">
+          <div class="message-top">
+            Cool User
+          </div>
+          <div class="message-middle">
+            I would subscribe to a Patreon that just sent me stories of maga chuds getting owned by their HOAs
+          </div>
+          <div class="message-bottom">
+            June 5, 10:50pm
+          </div>
+        </div>
+
       </div>
     </section>
-    <footer id="appFooter">controls</footer>
-  </main>
-  <script src="./script.js" type="module"></script>
-  <script src="./t.js" type="module"></script>
+    <footer id="appFooter">
+      <div id="inputMenu">
+      </div>
+      <div id="inputContainer" class="container">
+        <!-- <label for=""></label> -->
+        <input type="text" name="" id="messageInput" placeholder="Type a message..." />
+        <input id="messageSubmitButton" type="button" value="Send">
+      </div>
+    </footer>
+  </div>
+  <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+      }
+    }
+  </script>
+  <script src="./scratch.js" type="module"></script>
+  <!-- <script src="https://unpkg.com/vue@3/dist/vue.esm-browser.js" type="module"></script> -->
+  <!-- <script src="https://unpkg.com/vue@3"></script> -->
+
 </body>
 
 </html>
