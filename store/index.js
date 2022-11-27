@@ -1,5 +1,3 @@
-// import { workHistory } from '../data/work-data.js'
-
 export const storeObj = {
 	state: {
 		workHistory: [],

@@ -83,21 +83,32 @@ class FirestoreService {
   }
 
   async addMessage(chatId, msg) {
-    const res = (await this.chatrooms.doc(chatId).collection('messages').add(msg)) //.get())
+    try {
+      const res = (await this.chatrooms.doc(chatId).collection('messages').add(msg));
+
+      return res ? true : false;
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   async getChatroomById(chatId) {
     const chat = await (await this.chatrooms.doc(chatId).get()).data()
-    console.log('getChatroomById ', chat)
+    console.log('getChatroomById ', chat);
 
     return chat
   }
 
   async getChatroomByName(chatName) {
-    const chat = await (await this.chatrooms
-      .where('name', '==', chatName)
-    );
-    return chat
+    try {
+      const chat = await (await this.chatrooms
+        .where('name', '==', chatName)
+      );
+
+      return chat;
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   async getMessages(chatId) {
@@ -106,26 +117,27 @@ class FirestoreService {
       ).get()).docs
       .map((ch, i) => {
         return ch.data();
-        return d
       });
 
     console.warn('getMessages', { msgs });
-    return msgs
+    
+    return msgs;
   }
 
   listenOnMessages(chatId) {
     this.messageListener = this.chatrooms.doc(chatId).collection('messages').orderBy('createdDate', 'asc')
 
     this.messageListener.onSnapshot(snap => {
-
       const msgs =
         snap.docs.map(doc => {
           const d = doc.data();
+
           d.createdDate = `${new Date(d.createdDate).toLocaleDateString()} ${new Date(d.createdDate).toLocaleTimeString()}`
-     return d
+
+          return d;
         });
-        
-      this.messages$.next(msgs)
+
+      this.messages$.next(msgs);
     });
 
     return this.messages$;

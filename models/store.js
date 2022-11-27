@@ -17,27 +17,28 @@ const initialState = {
 
 
 class Store extends EventEmitter {
+  storeKey = 'chatApp';
+  state = {
+    currentUser: {
+      chatrooms: [],
+    },
+    activeChat: {
+      name: null,
+      id: null,
+      description: '',
+      topic: null,
+      labels: [],
+      messages: new Map(),
+    },
+  };
+
   constructor() {
     super();
+
     this.messageStream$ = Firestore.messages$
       .pipe(
         tap(msg => msg.createdDate = `${new Date(msg.createdDate).toLocaleDateString()} ${new Date(msg.createdDate).toLocaleTimeString()}`),
       );
-
-    this.storeKey = 'chatApp';
-    this.state = {
-      currentUser: {
-        chatrooms: [],
-      },
-      activeChat: {
-        name: null,
-        id: null,
-        description: '',
-        topic: null,
-        labels: [],
-        messages: new Map(),
-      },
-    };
   }
 
   async init(initialState = {}) {
@@ -50,22 +51,14 @@ class Store extends EventEmitter {
 
   async logUserIn(un = '') {
     this.state.currentUser = await Firestore.findUserByUsername(un)
-    if (this.state.currentUser) {
-      let userchat = (await this.state.currentUser.chatrooms[0]) //.get()).data()
-      this.state.activeChat = (await userchat.get()).data()
-      userchat = (await userchat.get()).data()
-      this.setActiveChat(userchat.id)
+    const userchat = (await (await this.state.currentUser.chatrooms[0]).get()).data() //.get()).data()
+    this.state.activeChat = userchat;
 
-      return this;
-    } else {
-      Firestore.addUser({ username: un })
-      let userchat = (await this.state.currentUser.chatrooms[0]) //.get()).data()
-      this.state.activeChat = (await userchat.get()).data()
-      userchat = (await userchat.get()).data()
-      this.setActiveChat(userchat.id)
+    if (!this.state.currentUser) Firestore.addUser({ username: un })
 
-      return this;
-    }
+    this.setActiveChat(userchat.id);
+    
+    return this;
   }
 
   startMessageStream(roomid) {
