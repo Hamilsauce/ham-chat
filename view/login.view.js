@@ -1,18 +1,21 @@
 import { EventEmitter } from '../lib/event-emitter.js';
+import {View} from './view.js';
 
 
 const InputEvents = {
   login: 'user:login'
 }
 
-export class LoginModal extends EventEmitter {
-  constructor(id = 'loginModal') {
-    super();
+export class LoginModal extends View {
+  
+  
+  constructor(id = 'login-modal') {
+    super('login-modal');
     // this.init(InputEvents)
-    this.self = document.createElement('div');
-    this.dimmer = document.createElement('div');
-    this.self.id = id
-    this.dimmer.id = 'modalDimmer'
+    // this.dimmer = document.createElement('div');
+    // this.dom.id = id
+    // this.dimmer.id = 'modalDimmer'
+    
     this.usernameInput = document.createElement('input');
     this.usernameInput.type = 'text';
     this.usernameInput.value = 'cooluser1';
@@ -28,21 +31,21 @@ export class LoginModal extends EventEmitter {
   // this.loginSubmit.click()
   //   }, 1000)
 
-    this.self.appendChild(this.usernameLabel)
-    this.self.appendChild(this.usernameInput)
-    this.self.appendChild(this.loginSubmit)
+    this.dom.appendChild(this.usernameLabel)
+    this.dom.appendChild(this.usernameInput)
+    this.dom.appendChild(this.loginSubmit)
     this.loginSubmit.addEventListener('click', e => {
       this.submitLogin.bind(this)(this.usernameInput.value)
     });
   }
 
   display() {
-    document.querySelector('body').insertAdjacentElement('afterbegin', this.dimmer)
-    document.querySelector('#app').appendChild(this.self)
+    // document.querySelector('body').insertAdjacentElement('afterbegin', this.dimmer)
+    document.querySelector('#app').appendChild(this.dom)
   }
   hide() {
-    this.self.remove()
-    this.dimmer.remove()
+    this.dom.remove()
+    // this.dimmer.remove()
   }
 
   submitLogin(un) {
@@ -57,11 +60,14 @@ export class LoginModal extends EventEmitter {
 
   // resetMessage() { this.currentMessage = '' }
 
+
+  get show() { return this.input.value }
+  
   get show() { return this.input.value }
 
   set show(v) { this.input.value = v }
 
-  // get input() { return this.self.querySelector('#messageInput') };
+  // get input() { return this.dom.querySelector('#messageInput') };
 
-  // get submitButton() { return this.self.querySelector('#messageSubmitButton') };
+  // get submitButton() { return this.dom.querySelector('#messageSubmitButton') };
 }

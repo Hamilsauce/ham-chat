@@ -1,25 +1,29 @@
 import { EventEmitter } from './lib/event-emitter.js';
 import { InputBar } from './view/input-bar.view.js';
-// import { createApp } from 'vue'
 import { store } from './models/store.js';
 import db from './firebase/firebase.js';
 import { LoginModal } from './view/login.view.js';
-const appBody = document.querySelector('#appBody')
+
+const appBody = document.querySelector('#app-body')
 const containers = document.querySelectorAll('.container')
 
 const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, interval, of , fromEvent, merge, empty, delay, from } = rxjs;
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 const { fromFetch } = rxjs.fetch;
 
+const attrs = {
+  id: 'testid1',
+  dataset: {
+    prop: '1',
+    fuck: 'me'
+  },
+  classList: 'butt suck'
+}
 
-// const vueapp = createApp({
-//   data() {
-//     return {
-//       message: 'Hello Vue!'
-//     }
-//   }
-// }).mount('#appHeader')
+const { dataset, ...attrs2 } = attrs
 
+console.warn('attrs2, dataset', attrs2, dataset)
+// Object.assign(appBody, {...attrs})
 
 export class AppView extends EventEmitter {
   constructor() {
@@ -39,7 +43,7 @@ export class AppView extends EventEmitter {
     this.viewCache = {
       chat: null
     }
-    
+
     this.messages$ = this.store.messageStream$
       .pipe(
         map(this.renderMessages.bind(this)),
@@ -56,7 +60,7 @@ export class AppView extends EventEmitter {
 
   renderMessages(msgs) {
     if (!msgs) return;
-    
+
     this.messageBoxEl.innerHTML = `${
         msgs.reduce((template, curr) => {
           return `${template}
@@ -67,7 +71,7 @@ export class AppView extends EventEmitter {
           </div>`;
         },'')
       }`;
-      
+
     setTimeout(() => {
       if (this.lastMessageEl) {
         this.lastMessageEl.scrollIntoView({ behavior: 'smooth' });
@@ -104,8 +108,3 @@ export class AppView extends EventEmitter {
 }
 
 const chatApp = new AppView();
-
-setTimeout(() => {
-  // chatApp.toggleLogin()
-
-}, 1500)

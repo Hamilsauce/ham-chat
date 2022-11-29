@@ -10,17 +10,17 @@ class FirestoreService {
     this.currentFolder
     this.db = db;
 
-    this.users = this.db.collection('users')
+    this.users = this.db.collection('users');
 
-    this.chatrooms = this.db.collection('chatrooms')
+    this.chatrooms = this.db.collection('chatrooms');
 
     this.messages$ = new BehaviorSubject([]);
 
-
     this.fsFolders$ = new Subject();
+
     this.fsFiles$ = new Subject();
 
-    this.fsSnapQuery$ = merge(this.fsFolders$.asObservable(), this.fsFiles$.asObservable())
+    this.fsSnapQuery$ = merge(this.fsFolders$.asObservable(), this.fsFiles$.asObservable());
 
     // this.fsQuery$
     //   .pipe(
@@ -37,6 +37,7 @@ class FirestoreService {
     //     // tap(x => console.log('AFTER DISTINCY JN FS', x)),
     //   );
   }
+
   get Timestamp() {
     return this.db.app.firebase_.firestore.Timestamp
   }
@@ -47,17 +48,19 @@ class FirestoreService {
 
   async findUserByUsername(un) {
     return (await db.collection('users')
-        .where('username', '==', un)
-        .get())
-      .docs[0].data()
+      .where('username', '==', un)
+      .get()
+    ).docs[0].data();
   }
 
   async folder(id) {
     this.getFolderChildrenSnap((await this.folders.doc(id).get()).data())
+
     this._firestoreResponse$.next(
       (
         await this.getFolderChildrenData((await this.folders.doc(id).get()).data())))
   }
+
   async addUser(user) {
     // console.log('MODEL', msg);
     // msg.id = msg.id ? msg.id : utils.uuid()
@@ -92,6 +95,30 @@ class FirestoreService {
     }
   }
 
+  get() {
+    return {
+      chat() {
+        return {
+          by() {
+            return {
+              async id(id) {
+                const chat = await (await this.chatrooms.doc(chatId).get()).data()
+                console.log('getChatroomById ', chat);
+
+                return chat
+              },
+              name(name) {},
+            }
+          },
+          where() {},
+        }
+      },
+      user() {
+        return
+      },
+    }
+  }
+
   async getChatroomById(chatId) {
     const chat = await (await this.chatrooms.doc(chatId).get()).data()
     console.log('getChatroomById ', chat);
@@ -114,13 +141,10 @@ class FirestoreService {
   async getMessages(chatId) {
     const msgs = (await (
         await this.chatrooms.doc(chatId).collection('messages').orderBy('createdDate', 'asc')
-      ).get()).docs
-      .map((ch, i) => {
-        return ch.data();
-      });
+       .get())).docs.map((ch, i) => ch.data());
 
     console.warn('getMessages', { msgs });
-    
+
     return msgs;
   }
 

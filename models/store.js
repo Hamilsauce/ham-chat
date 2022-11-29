@@ -66,19 +66,23 @@ class Store extends EventEmitter {
   }
 
   async setActiveChat(roomId) {
-    this.state.activeChat = await Firestore.getChatroomById(roomId)
-    this.getMessages(roomId)
+    this.state.activeChat = await Firestore.getChatroomById(roomId);
+    
+    this.getMessages(roomId);
+    
     this.emit('chat:loaded', this.activeChat);
+    
     return this;
   }
 
-  setCurrentUser(userId) {
+  setCurrentUser(data) {
     const messages = Object.values(data)
       .reduce((map, curr, i) => {
         for (var prop in curr) {
-          curr[prop] = coerceData(curr[prop])
+          curr[prop] = coerceData(curr[prop]);
         }
-        return map.set(curr.id, curr)
+       
+        return map.set(curr.id, curr);
       }, new Map());
 
     this.state = { ...this.state, messages };
@@ -99,9 +103,11 @@ class Store extends EventEmitter {
   }
 
   async getMessages(chatId) {
-    this.state.activeChat.messages = await Firestore.getMessages(chatId) //(this.activeChat.id, msg)
-    this.startMessageStream(chatId)
-    this.emit('messages:update', this.state.activeChat.messages)
+    this.state.activeChat.messages = await Firestore.getMessages(chatId);
+    
+    this.startMessageStream(chatId);
+    
+    this.emit('messages:update', this.state.activeChat.messages);
   }
 
   async addMessage(msg) {
@@ -112,20 +118,24 @@ class Store extends EventEmitter {
       createdDate: Date.now(),
       type: 'message'
     }
-    await Firestore.addMessage(this.activeChat.id, msg)
-    this.getMessages(this.activeChat.id)
-    this.state.activeChat.messages = await Firestore.getMessages(this.activeChat.id) //(this.activeChat.id, msg)
+    
+    await Firestore.addMessage(this.activeChat.id, msg);
+    
+    this.getMessages(this.activeChat.id);
+    
+    this.state.activeChat.messages = await Firestore.getMessages(this.activeChat.id);
 
     return this.messages;
   }
 
   loadFromLocalStore(key) {
-    return this.loadState(localStore.get(this.storeKey))
+    return this.loadState(localStore.get(this.storeKey));
   }
 
   get messages() { return [...this.state.activeChat.messages.values()] };
 
   get activeChat() { return this.state.activeChat };
+  
   get currentUser() { return this.state.currentUser };
 }
 
