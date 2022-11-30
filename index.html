@@ -19,7 +19,9 @@
       <h2 class="container">poop chat</h2>
     </header>
     <section id="app-body">
-      <div id="chatMessages" class="container"></div>
+      <!-- <div id="chatMessages" class="container"></div> -->
+        <div id="active-view"></div>
+      
     </section>
     <footer id="app-footer">
       <div id="inputMenu"></div>
@@ -87,7 +89,7 @@
 
   <template id="login-modal-template" data-template="login-modal">
     <div id="login-modal">
-      <section id="login-action-prompt" data-show="false">
+      <section id="login-activity-prompt" data-show="false">
         <button id="login-button" data-action="login" class="app-button large" type="button">login</button>
         <button id="signup-button" data-action="signup" class="app-button large" type="button">sign up</button>
       </section>
@@ -95,7 +97,7 @@
         <h2 id="login-form-title">login</h2>
         <div class="form-group">
           <label for="login-username-input">Username</label>
-          <input type="text" name="login-username-input" id="login-username-input" />
+          <input name="login-username-input" value="jake" type="text"  id="login-username-input" />
         </div>
         <div class="form-group">
           <label for="login-password-input">Password</label>
@@ -106,62 +108,21 @@
         </div>
       </section>
 
-      <section id="register-form" data-show="false">
-        <h2 id="register-form-title">register</h2>
+      <section id="signup-form" data-show="false">
+        <h2 id="signup-form-title">signup</h2>
         <div class="form-group">
-          <label for="register-username-input">Username</label>
-          <input type="text" name="register-username-input" id="register-username-input" />
+          <label for="signup-username-input">Username</label>
+          <input type="text" name="signup-username-input" id="signup-username-input" />
         </div>
         <div class="form-group">
-          <label for="register-password-input">Password</label>
-          <input type="text" name="register-password-input" id="register-password-input" />
+          <label for="signup-password-input">Password</label>
+          <input type="text" name="signup-password-input" id="signup-password-input" />
         </div>
         <div class="form-group">
-          <button id="register-submit-button" data-action="register:submit" class="app-button large" type="button">Ok</button>
+          <button id="signup-submit-button" data-action="signup:submit" class="app-button large" type="button">Ok</button>
         </div>
       </section>
 
     </div>
   </template>
 </body>
-
-</html>
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <title>app</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/rxjs/7.3.0/rxjs.umd.min.js" integrity="sha512-y3JTS47nnpKORJX8Jn1Rlm+QgRIIZHtu3hWxal0e81avPrqUH48yk+aCi+gprT0RMAcpYa0WCkapxe+bpBHD6g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-  <link rel="stylesheet" href="./style.css" />
-</head>
-
-<body>
-  <div id="app">
-    <header id="app-header">
-      <div id="app-header-left">L</div>
-      <div id="app-header-center">
-        <h1>Title</h1>
-      </div>
-      <div id="app-header-right">R</div>
-    </header>
-    <section id="app-body">
-      <div class="container">
-        Body
-      </div>
-    </section>
-    <footer id="app-footer">
-      <div class="container">
-        footer
-      </div>
-    </footer>
-  </div>
-  <script src="./script.js" type="module"></script>
-</body>
-
-</html>

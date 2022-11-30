@@ -11,29 +11,18 @@ const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, inter
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 const { fromFetch } = rxjs.fetch;
 
-const attrs = {
-  id: 'testid1',
-  dataset: {
-    prop: '1',
-    fuck: 'me'
-  },
-  classList: 'butt suck'
-}
-
-const { dataset, ...attrs2 } = attrs
-
-console.warn('attrs2, dataset', attrs2, dataset)
-// Object.assign(appBody, {...attrs})
-
 export class AppView extends EventEmitter {
+
   constructor() {
     super();
     this.self = document.querySelector('#app');
-    this.messageBoxEl = document.querySelector('#chatMessages');
+    this.messageBoxEl = document.createElement('div');
+    this.messageBoxEl.id = 'chatMessages';
+    
     this.store = store;
     this.inputBar = new InputBar();
     this.loginModal = new LoginModal();
-    this.loginModal.display()
+    // this.loginModal.display()
     this.currentUser;
     this.store.registerListener('messages:update', this.handleMessagesUpdate.bind(this))
     this.store.registerListener('chat:loaded', this.handleChatLoaded.bind(this))
@@ -44,18 +33,42 @@ export class AppView extends EventEmitter {
       chat: null
     }
 
-    this.messages$ = this.store.messageStream$
+    this.messages$ =
+      this.store.messageStream$
       .pipe(
+
         map(this.renderMessages.bind(this)),
       )
-      .subscribe()
+    // .subscribe()
+    this.setActiveView('login')
   }
 
+  get currentViewId() { return this.activeView.firstElementChild ? this.activeView.firstElementChild.id : null}
+
   get messageEls() { return [...this.messageBoxEl.querySelectorAll('.message')] }
+
   get lastMessageEl() { return this.messageEls[this.messageEls.length - 1] }
+
+  get activeView() { return document.querySelector('#active-view'); }
 
   clearMessages() {
     this.messageBoxEl.innerHTML = ''
+  }
+
+  setActiveView(viewName) {
+    if (this.currentViewId === viewName) return;
+    if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
+    if (viewName == 'chat') {
+      this.messages$
+        .subscribe()
+      this.activeView.append(this.messageBoxEl)
+
+
+    } else if (viewName == 'login') {
+      // this.activeView.firstElementChild.remove()
+      this.activeView.append(this.loginModal.dom)
+
+    }
   }
 
   renderMessages(msgs) {
@@ -101,7 +114,9 @@ export class AppView extends EventEmitter {
   handleChatLoaded(chat) {}
 
   async handleLogin(username) {
+    console.log('handleLogin', { username })
     this.currentUser = await this.store.logUserIn(username)
+    this.setActiveView('chat')
   }
 
   handleMessagesUpdate(messages) {}
