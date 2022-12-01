@@ -11,6 +11,9 @@ const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, inter
 const { flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 const { fromFetch } = rxjs.fetch;
 
+const emptyStr = ''
+console.log('!!emptyStr', !!emptyStr)
+
 export class AppView extends EventEmitter {
 
   constructor() {

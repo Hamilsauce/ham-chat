@@ -8,11 +8,23 @@ const InputEvents = {
 export class InputBar extends EventEmitter {
   constructor(selector = '#inputContainer') {
     super();
+
     this.init(InputEvents)
     this.self = document.querySelector(selector);
 
     this.submitButton.addEventListener('click', e => {
       this.sendMessage.bind(this)(this.currentMessage)
+    });
+
+    this.input.addEventListener('keyup', e => {
+      console.log({e});
+      const { key,shiftKey } = e;
+console.log('shiftKey', shiftKey)
+      if (key && key.toLowerCase() === 'enter') {
+        console.warn('KEY IS ENTER, curr message: ', this.currentMessage)
+      this.sendMessage.bind(this)(this.currentMessage)
+      }
+
     });
   }
 
@@ -33,7 +45,9 @@ export class InputBar extends EventEmitter {
 
   resetMessage() { this.currentMessage = '' }
 
-  get currentMessage() { return this.input.value }
+  get hasMessage() { return !!this.currentMessage }
+
+  get currentMessage() { return this.input.value.trim() }
 
   set currentMessage(v) { this.input.value = v }
 
