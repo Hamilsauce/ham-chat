@@ -1,4 +1,5 @@
-import { EventEmitter } from '../lib/event-emitter.js';
+// import { EventEmitter } from '../lib/event-emitter.js';
+import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
 
 import { defineAction } from '../models/actions.js';

@@ -1,4 +1,5 @@
-import { AppObject } from '../lib/AppObject.js';
+// import { AppObject } from '../lib/AppObject.js';
+import {AppObject} from '../lib/AppObject.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 
 const { template, utils } = ham;
@@ -13,7 +14,7 @@ export class View extends AppObject {
 
     super(name, 'view');
 
-    this.#self = View.#getTemplate(name);
+    this.#self = View.getTemplate(name);
 
     this.#selectedElement = this.dom;
   };
@@ -24,7 +25,7 @@ export class View extends AppObject {
 
 
 
-  static #getTemplate(name) {
+  static getTemplate(name) {
     return template(name);
   }
 

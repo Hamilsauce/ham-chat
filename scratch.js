@@ -1,9 +1,9 @@
-import { EventEmitter } from './lib/event-emitter.js';
+// import { EventEmitter } from './lib/event-emitter.js';
 import { InputBar } from './view/input-bar.view.js';
 import { store } from './models/store.js';
 import db from './firebase/firebase.js';
 import { LoginModal } from './view/login.view.js';
-
+import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 const appBody = document.querySelector('#app-body')
 const containers = document.querySelectorAll('.container')
 

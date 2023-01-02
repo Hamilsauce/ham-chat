@@ -47,6 +47,7 @@ body {
   background: #F0F0F0;
   border: none;
   border-radius: 6px;
+  box-shadow: 0 2px 12px 2px #2A3F84BA;
   text-decoration: wavy;
 }
 
@@ -72,7 +73,7 @@ body {
   width: 100%;
   height: 100%;
   /* background: #22193733; */
-
+  /* border: 1px solid #EAEAEA; */
   overflow: hidden;
   overflow: scroll;
 }
@@ -100,21 +101,30 @@ body {
 }
 
 #inputMenu {
-  padding: 6px;
+  /* padding: 6px; */
 }
 
 #inputContainer {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
+  justify-content: space-between;
+  align-items: flex-start;
   gap: 6px;
   padding: 8px;
 }
 
+#inputMenu {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  /* gap: 6px; */
+  /* padding: 8px; */
+}
+
 #inputContainer input {
   font-size: 18px;
-  padding: 6px;
+  padding: 8px;
 }
 
 #messageSubmitButton {
@@ -124,6 +134,7 @@ body {
 #messageInput {
   width: 100%;
   font-size: 18px;
+  border-radius: 16px;
 }
 
 
@@ -135,8 +146,9 @@ body {
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
+  grid-auto-flow: dense;
   gap: 8px;
   width: 100%;
   height: 100%;
@@ -154,6 +166,7 @@ body {
   align-items: center;
   gap: 32px;
   padding: 32px;
+  /* height: 100%; */
 }
 
 #login-modal label {
