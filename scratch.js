@@ -22,6 +22,7 @@ export class AppView extends EventEmitter {
     this.self = document.querySelector('#app');
     this.messageBoxEl = document.createElement('div');
     this.messageBoxEl.id = 'chatMessages';
+    // this.messageBoxEl.dataset.viewName = 'Chatroom';
 
     this.store = store;
     this.inputBar = new InputBar();
@@ -49,7 +50,7 @@ export class AppView extends EventEmitter {
         map(this.renderMessages.bind(this)),
       )
     // .subscribe()
-this.init()
+    this.init()
   }
 
   async init() {
@@ -70,11 +71,13 @@ this.init()
 
   get activeView() { return document.querySelector('#active-view'); }
 
+  get headerTitle() { return document.querySelector('#app-header-title'); }
+
   clearMessages() {
     this.messageBoxEl.innerHTML = ''
   }
 
- async setActiveView(viewName) {
+  async setActiveView(viewName) {
     if (this.currentViewId === viewName) return;
     if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
 
@@ -85,8 +88,10 @@ this.init()
       this.activeView.append(this.loginModal.dom)
     }
     else if (viewName == 'chat-list') {
-      this.activeView.append(await this.chatList.render())
+      this.activeView.append(await this.chatList.render());
     }
+    
+    this.headerTitle.textContent = this.activeView.firstElementChild.dataset.viewName || this.store.activeChat.name
   }
 
   renderMessages(msgs) {

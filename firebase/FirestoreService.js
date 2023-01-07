@@ -7,7 +7,8 @@ const { fromFetch } = rxjs.fetch;
 
 class FirestoreService {
   constructor(db) {
-    this.currentFolder
+    // this.currentFolder
+   
     this.db = db;
 
     this.users = this.db.collection('users');
@@ -16,11 +17,11 @@ class FirestoreService {
 
     this.messages$ = new BehaviorSubject([]);
 
-    this.fsFolders$ = new Subject();
+    // this.fsFolders$ = new Subject();
 
-    this.fsFiles$ = new Subject();
+    // this.fsFiles$ = new Subject();
 
-    this.fsSnapQuery$ = merge(this.fsFolders$.asObservable(), this.fsFiles$.asObservable());
+    // this.fsSnapQuery$ = merge(this.fsFolders$.asObservable(), this.fsFiles$.asObservable());
 
     // this.fsQuery$
     //   .pipe(
@@ -42,7 +43,7 @@ class FirestoreService {
     return this.db.app.firebase_.firestore.Timestamp
   }
 
-  async file(id) { return await this.files.doc(id) }
+  // async file(id) { return await this.files.doc(id) }
 
   async findUserById(id) { return (await this.users.doc(id).get()).data() }
 
@@ -53,14 +54,14 @@ class FirestoreService {
     ).docs[0].data();
   }
 
-  async folder(id) {
-    this.getFolderChildrenSnap((await this.folders.doc(id).get()).data())
+  // async folder(id) {
+  //   this.getFolderChildrenSnap((await this.folders.doc(id).get()).data())
 
-    this._firestoreResponse$.next(
-      await this.getFolderChildrenData(
-        (await this.folders.doc(id).get()).data())
-    );
-  }
+  //   this._firestoreResponse$.next(
+  //     await this.getFolderChildrenData(
+  //       (await this.folders.doc(id).get()).data())
+  //   );
+  // }
 
   async addUser(user) {
     user = (await this.users.add(user))
@@ -134,13 +135,14 @@ class FirestoreService {
   }
 
   listenOnMessages(chatId) {
+   let msgs
     this.messageListener = this.chatrooms
       .doc(chatId)
       .collection('messages')
       .orderBy('createdDate', 'asc')
 
     this.messageListener.onSnapshot(snap => {
-      const msgs = snap.docs
+       msgs = snap.docs
         .map(doc => {
           const d = doc.data();
 
@@ -150,8 +152,8 @@ class FirestoreService {
         });
 
       this.messages$.next(msgs);
+console.log('msgs', msgs)
     });
-
     return this.messages$;
   }
 

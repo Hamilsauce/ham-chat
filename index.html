@@ -16,7 +16,11 @@
 <body>
   <div id="app">
     <header id="app-header">
-      <h2 class="container">poop chat</h2>
+      <div id="app-header-left">L</div>
+      <div id="app-header-center">
+        <h2 id="app-header-title">hamchat</h2>
+      </div>
+      <div id="app-header-right">R</div>
     </header>
     <section id="app-body">
       <div id="active-view"></div>
@@ -56,7 +60,7 @@
       <header id="app-header">
         <div id="app-header-left">L</div>
         <div id="app-header-center">
-          <h1 id="app-title">Poop Chat</h1>
+          <h1 id="app-title">hamchat</h1>
         </div>
         <div id="app-header-right">R</div>
       </header>
@@ -82,12 +86,10 @@
         </div>
       </footer>
     </div>
-
-
   </template>
 
   <template id="login-modal-template" data-template="login-modal">
-    <div id="login-modal">
+    <div id="login-modal" data-view-name="Login">
       <section id="login-activity-prompt" data-show="false">
         <button id="login-button" data-action="login" class="app-button large" type="button">login</button>
         <button id="signup-button" data-action="signup" class="app-button large" type="button">sign up</button>
@@ -125,13 +127,13 @@
 
     </div>
   </template>
- 
+
   <template id="chat-list-template" data-template="chat-list">
-    <section id="chat-list-container">
+    <section id="chat-list-container" data-view-name="Chats">
       <ul id="chat-list"></ul>
     </section>
   </template>
- 
+
   <template id="chat-list-item-template" data-template="chat-list-item">
     <li class="chat-list-item" id="" data-selected="">
       <div class="chat-name"></div>

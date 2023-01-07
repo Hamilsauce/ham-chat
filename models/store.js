@@ -47,27 +47,23 @@ class Store extends EventEmitter {
     const chat0 = await Firestore.getMessages('Chat Zero') //.get()
     const chat1 = (await jake.chatrooms[0].get()).data()
 
-    if (this.env === 'dev') {
-      await this.logUserIn('jake')
-    }
     window.chatStore = this.state;
     return this;
   }
 
- async  logUserIn(un = '') {
+  async logUserIn(un = '') {
     this.state.currentUser = await Firestore.findUserByUsername(un)
     const user = this.state.currentUser;
     const userchat = (await (await this.state.currentUser.chatrooms[0]).get()).data() //.get()).data()
-    // this.state.activeChat = userchat;
-    user.chatrooms.forEach(async (ref, i) => {
 
+    user.chatrooms.forEach(async (ref, i) => {
       const chat = (await (await ref).get()).data();
       user.chatrooms[i] = { ...chat, createdDate: chat.createdDate.toDate().toLocaleDateString() };
     });
     if (!this.state.currentUser) Firestore.addUser({ username: un })
 
     this.setActiveChat(userchat.id);
-console.warn('LOGIN USER', user);
+    console.warn('LOGIN USER', user);
     return this;
   }
 
@@ -76,6 +72,8 @@ console.warn('LOGIN USER', user);
   }
 
   async setActiveChat(roomId) {
+
+    console.log('setActiveChat', { roomId })
     this.state.activeChat = await Firestore.getChatroomById(roomId);
 
     this.getMessages(roomId);

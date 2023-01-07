@@ -31,18 +31,16 @@ export class ChatList extends View {
   }
 
   async render() {
-    const chatData = await this.store.currentUser.chatrooms
-
-  await  setTimeout(() => {
+    let chatData;
+  await  setTimeout(async () => {
       console.log(' ', );
+       chatData = await this.store.currentUser.chatrooms
       const items = chatData.map((_) => this.createItem(_));
-      console.log('items', items)
-      console.log('chatData', chatData)
-      this.list.innerHTML = ''
-      this.list.append(...items)
+      this.list.innerHTML = '';
+      this.list.append(...items);
+    }, 250)
 
-    }, 1000)
-    return this.dom
+    return this.dom;
   }
 
   hide() {
