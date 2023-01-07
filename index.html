@@ -19,16 +19,12 @@
       <h2 class="container">poop chat</h2>
     </header>
     <section id="app-body">
-      <!-- <div id="chatMessages" class="container"></div> -->
       <div id="active-view"></div>
 
     </section>
     <footer id="app-footer">
       <div id="inputMenu"></div>
       <div id="inputContainer" class="container">
-        <!-- <label for=""></label> -->
-        <!-- <input type="text" name="" id="messageInput" placeholder="Type a message..." /> -->
-
         <textarea name="" id="messageInput" _cols="30" _rows="1"></textarea>
         <svg id="messageSubmitButton" style="background:transparent;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="42" viewBox="-0 -0 50 50" xml:space="preserve">
           <g transform="translate(13,-8) scale(0.5 0.5) rotate(40)">
@@ -128,5 +124,17 @@
       </section>
 
     </div>
+  </template>
+ 
+  <template id="chat-list-template" data-template="chat-list">
+    <section id="chat-list-container">
+      <ul id="chat-list"></ul>
+    </section>
+  </template>
+ 
+  <template id="chat-list-item-template" data-template="chat-list-item">
+    <li class="chat-list-item" id="" data-selected="">
+      <div class="chat-name"></div>
+    </li>
   </template>
 </body>
