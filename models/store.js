@@ -16,8 +16,12 @@ const initialState = {
 };
 
 
+
 class Store extends EventEmitter {
+  generalChatDocPath = 'chatrooms/TNup80srmvCs3pwrP8sX';
+  unsubscribeMessages = null;
   env = 'dev';
+  env = 'test';
   storeKey = 'chatApp';
   state = {
     currentUser: {
@@ -43,50 +47,58 @@ class Store extends EventEmitter {
   }
 
   async init(initialState = {}) {
-    const jake = await Firestore.findUserById(jakeId)
-    const chat0 = await Firestore.getMessages('Chat Zero') //.get()
-    const chat1 = (await jake.chatrooms[0].get()).data()
-
     window.chatStore = this.state;
+
     return this;
   }
 
-  async logUserIn(un = '') {
-    this.state.currentUser = await Firestore.findUserByUsername(un)
+  async loadChats() {
     const user = this.state.currentUser;
-    const userchat = (await (await this.state.currentUser.chatrooms[0]).get()).data() //.get()).data()
 
     user.chatrooms.forEach(async (ref, i) => {
       const chat = (await (await ref).get()).data();
-      user.chatrooms[i] = { ...chat, createdDate: chat.createdDate.toDate().toLocaleDateString() };
+      user.chatrooms[i] = { ...chat };
     });
-    if (!this.state.currentUser) Firestore.addUser({ username: un })
-
-    this.setActiveChat(userchat.id);
-    console.warn('LOGIN USER', user);
-    return this;
   }
 
   startMessageStream(roomid) {
-    Firestore.listenOnMessages(roomid)
+    this.unsubscribeMessages = Firestore.listenOnMessages(roomid);
   }
 
   async setActiveChat(roomId) {
-
-    console.log('setActiveChat', { roomId })
+    this.state.activeChatId = roomId
     this.state.activeChat = await Firestore.getChatroomById(roomId);
 
     this.getMessages(roomId);
 
     this.emit('chat:loaded', this.activeChat);
+  }
 
-    return this;
+  async registerUser({ username, password }) {
+    await Firestore.addUser({ username, password, chatrooms: [Firestore.createDocumentRef(this.generalChatDocPath)] });
+
+    this.emit('user:registered');
+  }
+
+  async getUser({ username, password }) {
+    const res = await Firestore.authenticate(username, password);
+
+    if (!!res) {
+      this.state.currentUser = res;
+
+      await this.loadChats();
+
+      return this.state.currentUser
+    }
+    else {
+      return null;
+    }
   }
 
   setCurrentUser(data) {
     const messages = Object.values(data)
       .reduce((map, curr, i) => {
-        for (var prop in curr) {
+        for (let prop in curr) {
           curr[prop] = coerceData(curr[prop]);
         }
 
@@ -100,7 +112,7 @@ class Store extends EventEmitter {
   loadState(data, key) {
     const messages = Object.values(data)
       .reduce((map, curr, i) => {
-        for (var prop in curr) {
+        for (let prop in curr) {
           curr[prop] = coerceData(curr[prop])
         }
         return map.set(curr.id, curr)
@@ -113,7 +125,7 @@ class Store extends EventEmitter {
   async getMessages(chatId) {
     this.state.activeChat.messages = await Firestore.getMessages(chatId);
 
-    this.startMessageStream(chatId);
+    this.startMessageStream.bind(this)(chatId)
 
     this.emit('messages:update', this.state.activeChat.messages);
   }
@@ -122,7 +134,6 @@ class Store extends EventEmitter {
     msg = {
       text: msg.text,
       from: this.currentUser.username,
-      from_id: this.currentUser.id,
       createdDate: Date.now(),
       type: 'message'
     }
@@ -145,7 +156,10 @@ class Store extends EventEmitter {
   get activeChat() { return this.state.activeChat };
 
   get currentUser() { return this.state.currentUser };
+ 
   get userChats() { return this.state.currentUser.chatrooms };
 }
 
 export const store = await new Store().init(initialState)
+
+window.chatstore = store

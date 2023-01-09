@@ -20,66 +20,39 @@ const InputEvents = {
 
 export class LoginModal extends View {
 
-
   constructor(id = 'login-modal') {
     super('login-modal');
-    //   // this.init(InputEvents)
-    //   // this.dimmer = document.createElement('div');
-    //   // this.dom.id = id
-    //   // this.dimmer.id = 'modalDimmer'
 
-    //   this.usernameInput = document.createElement('input');
-    //   this.usernameInput.type = 'text';
-    //   this.usernameInput.value = 'cooluser1';
-    //   this.usernameInput.id = 'usernameInput'
-    //   this.loginSubmit = document.createElement('input');
-    //   this.usernameLabel = document.createElement('label');
-    //   this.usernameLabel.textContent = 'Username'
-    //   this.loginSubmit.type = 'button';
-    //   this.loginSubmit.value = 'Ok';
-    //   this.loginSubmit.id = 'loginSubmit'
-
-    // //   setTimeout(() => {
-    // // this.loginSubmit.click()
-    // //   }, 1000)
-
-    //   this.dom.appendChild(this.usernameLabel)
-    //   this.dom.appendChild(this.usernameInput)
-    //   this.dom.appendChild(this.loginSubmit)
     this.display();
-    console.log('this.activeStep', this.activeStep)
 
     this.dom.addEventListener('click', e => {
-
       const targ = e.target;
       const dataset = targ.dataset
 
-
-      console.log('targ.id ', targ.id)
       if (targ.id === 'login-button') {
         this.display('loginForm');
-
       }
+      
       else if (targ.id === 'signup-button') {
         this.display('signupForm');
-
       }
+      
       else if (dataset.action && dataset.action.split(':')[1] === 'submit') {
         const submitType = dataset.action.split(':')[0]
 
         if (submitType == 'login') {
-          this.submitLogin.bind(this)(this.$('#login-username-input').value)
+          this.submitLogin.bind(this)(this.$('#login-username-input').value, this.$('#login-password-input').value)
         }
 
         else if (submitType === 'signup' && this.$('#signup-username-input').value) {
-          this.submitSignup.bind(this)(this.$('#signup-username-input').value)
+          this.submitSignup.bind(this)(this.$('#signup-username-input').value, this.$('#signup-password-input').value)
         }
       }
     });
   }
-  
+
   render() {
-    return this.dom
+    return this.dom;
   }
 
   display(state = 'activityPrompt') {
@@ -98,37 +71,26 @@ export class LoginModal extends View {
       this.loginForm.style.display = 'none';
       this.signupForm.style.display = null;
     }
-    // document.querySelector('body').insertAdjacentElement('afterbegin', this.dimmer)
-    // document.querySelector('#app').appendChild(this.dom)
   }
 
   hide() {
-    this.dom.remove()
-    // this.dimmer.remove(
+    this.dom.remove();
   }
 
   submitLogin(username, password) {
-    this.emit('login', username);
-    // this.emit(Login({ username, password }));
+    this.emit('login', { username, password });
 
-    // this.resetMessage()
-    // console.log('events', InputEvents.send, this.events);
-    // console.log('listenersOn', InputEvents.send, this.listenersOn(InputEvents.send));
-
-    this.hide()
+    this.hide();
   }
 
-  submitSignup(un) {
-    this.emit('signup', un);
+  submitSignup(username, password) {
+    console.log('this.emit(signup, username, password)', this.emit('signup', username, password))
+    console.warn('signup', username, password);
+    this.emit('signup', { username, password });
 
-    // this.resetMessage()
-    // console.log('events', InputEvents.send, this.events);
-    // console.log('listenersOn', InputEvents.send, this.listenersOn(InputEvents.send));
-
-    this.hide()
+    this.hide();
   }
 
-  // resetMessage() { this.currentMessage = '' }
   get activeStep() { return this.dom.firstElementChild.id }
 
   get activityPrompt() { return this.$('#login-activity-prompt') }
@@ -140,8 +102,4 @@ export class LoginModal extends View {
   get show() { return this.input.value }
 
   set show(v) { this.input.value = v }
-
-  // get input() { return this.dom.querySelector('#messageInput') };
-
-  // get submitButton() { return this.dom.querySelector('#messageSubmitButton') };
 }
