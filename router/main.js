@@ -1,4 +1,4 @@
-import { router } from './router.js';
+import { useRouter } from './router.js';
 import { RouterTestApp } from './RouterApp.js';
 import { routes } from './routes.js';
 // window.history.pushState({ data: new Map([['dododk', { suck: 'me' }]]) }, 'Some history entry title', '/some-path');
@@ -11,17 +11,17 @@ const appBody = document.querySelector('#app-body')
 const containers = document.querySelectorAll('.container')
 
 const app = new RouterTestApp()
+const router = useRouter(app,{routes, origin: 'router'})
+// app.use(router, {routes, origin: 'router'})
 
-app.use(router, routes)
 
+// nav.addEventListener('click', e => {
+//   const targ = e.target.closest('[data-router-link]')
 
-nav.addEventListener('click', e => {
-  const targ = e.target.closest('[data-router-link]')
+//   if (targ) {
+//     const path = targ.dataset.path
+//     console.log('path', path)
+//     router.push(path)
+//   }
 
-  if (targ) {
-    const path = targ.dataset.path
-    console.log('path', path)
-    router.push(path)
-  }
-
-});
+// });

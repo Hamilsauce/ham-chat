@@ -2,16 +2,16 @@ import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitt
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 const { template, utils } = ham;
 
-export class Router extends EventEmitter {
+class Router extends EventEmitter {
   #routes = [];
   previousPathName = null;
   origin = null;
 
   constructor() {
     super();
-this.install = this.#install.bind(this);
+    // this.install = this.#install.bind(this);
     this.handleRouterLinkClick = this.#handleRouterLinkClick.bind(this);
-    // this.#init();
+    this.#init();
 
 
     window.onpopstate = e => {
@@ -26,7 +26,7 @@ this.install = this.#install.bind(this);
   get viewFrame() { return document.querySelector('#view-frame'); }
 
   get activeViewName() { return this.viewFrame.firstElementChild ? this.viewFrame.firstElementChild.dataset.viewName : null; }
-  
+
   get activeView() { return this.viewFrame.firstElementChild }
 
   get routes() { return this.#routes }
@@ -34,7 +34,6 @@ this.install = this.#install.bind(this);
   get historySize() { return history.length }
 
   get currentPathName() { return location.pathname.replace('/router/', '') }
-  // get previousPathName() { return location.pathname.replace('/router/', '') }
 
   render() {
     if (this.activeView) {
@@ -66,19 +65,17 @@ this.install = this.#install.bind(this);
 
   pop(e) {
     console.log('history.length before back', history.length)
-
     this.render();
-    
     console.log('history.length after back', history.length)
-    console.warn('IN POP', { history, location, router: this });
   }
 
   push(...urlSegments) {
-    const matchedRoute = this.#matchPath(urlSegments);
     const url = `${urlSegments.join('/')}`;
 
     if (url === this.currentPathName) return;
 
+    const matchedRoute = this.#matchPath(urlSegments);
+  
     this.previousPathName = this.currentPathName
 
     history.pushState({}, '', `${url}`);
@@ -87,6 +84,7 @@ this.install = this.#install.bind(this);
 
     console.warn('[END OF PUSH]: this.currentPathName', this.currentPathName)
     console.warn({ history });
+    console.log('history.length after back', history.length)
   }
 
   replace(...urlSegments) {
@@ -96,9 +94,9 @@ this.install = this.#install.bind(this);
     if (url === this.currentPathName) return;
 
     history.replaceState({}, '', `${url}`)
-  
+
     this.render();
-    
+
     console.warn('[END OF REPLACE]: this.currentPathName', this.currentPathName)
     console.warn({ history });
   }
@@ -127,24 +125,25 @@ this.install = this.#install.bind(this);
   #handleRouterLinkClick(e) {
     const { target } = e;
     const routerLink = e.target.closest('[data-router-link]');
-
     if (routerLink) {
+      console.warn('handleRouterLinkClick')
       this.push(routerLink.dataset.path);
     }
-  }
-
- static #install(app, { routes, origin }) {
-    this.#routes = routes;
-
-    this.origin = origin;
-    console.log('install', this)
-
-    // app.addEventListener('click', this.handleRouterLinkClick);
-
-    // this.replace('');
   }
 }
 
 
 
-export const router = new Router();
+let router = null;
+
+export const useRouter = (app, options) => {
+  const { routes, origin } = options;
+
+  if (router === null) {
+    router = new Router(origin, routes);
+
+    app.on('click', router.handleRouterLinkClick);
+  }
+
+  return router;
+}
