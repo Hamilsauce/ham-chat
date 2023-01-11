@@ -20,8 +20,8 @@ const initialState = {
 class Store extends EventEmitter {
   generalChatDocPath = 'chatrooms/TNup80srmvCs3pwrP8sX';
   unsubscribeMessages = null;
-  env = 'dev';
   env = 'test';
+  env = 'dev';
   storeKey = 'chatApp';
   state = {
     currentUser: {

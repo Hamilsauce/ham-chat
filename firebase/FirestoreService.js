@@ -5,6 +5,8 @@ const { forkJoin, Observable, iif, BehaviorSubject, AsyncSubject, Subject, inter
 const { shareReplay, distinctUntilChanged, flatMap, reduce, groupBy, toArray, mergeMap, switchMap, scan, map, tap, filter } = rxjs.operators;
 const { fromFetch } = rxjs.fetch;
 
+let cnt = 0
+
 class FirestoreService {
   unsubscribeMessages = null;
   #messagesSubject$ = new BehaviorSubject([]);
@@ -23,6 +25,9 @@ class FirestoreService {
         distinctUntilChanged((prev, curr) => prev.length === curr.length),
         shareReplay(1),
       )
+
+    cnt = cnt + 1
+    console.warn('IN FS Service Constructor', { cnt }, this);
   }
 
   get Timestamp() {

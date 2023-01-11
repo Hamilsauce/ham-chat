@@ -39,7 +39,7 @@ export class ChatList extends View {
       this.list.innerHTML = '';
 
       this.list.append(...items);
-    }, 400);
+    }, 200);
 
     return this.dom;
   }

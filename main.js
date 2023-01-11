@@ -77,12 +77,17 @@ export class AppView extends EventEmitter {
   }
 
   async setActiveView(viewName) {
-    if (this.currentViewId === viewName) return;
-    if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
+    viewName = viewName === null ? 'login' : viewName;
+    if (this.currentViewName === viewName) return;
+    this.currentViewName = viewName
+    // console.log('viewName', viewName)
+    // console.log('this.currentViewName', this.currentViewName)
+    // console.log('this.activeView', this.activeView)
 
     if (viewName == 'chat') {
       this.messages$.subscribe();
 
+      if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
       this.activeView.append(this.messageBoxEl);
     }
     else if (viewName == 'login') {
@@ -112,7 +117,7 @@ export class AppView extends EventEmitter {
       }`;
 
     console.timeEnd('renderMessages');
-    
+
     setTimeout(() => {
       if (this.lastMessageEl) {
         this.lastMessageEl.scrollIntoView({ behavior: 'smooth' });
@@ -126,12 +131,19 @@ export class AppView extends EventEmitter {
 
   handleChatLoaded(chat) {
     console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
-  
+
     this.setActiveView('chat');
   }
 
-  async handleUserRegistered() {
+  async handleUserRegistered(event) {
+    const res = await this.store.getUser({ username, password });
+    this.currentUser = res
+ console.warn('handleUserRegistered event', event)
+    setTimeout(() => {
     this.loginModal.display('loginForm');
+      // this.setActiveView('chat-list');
+      this.setActiveView('login');
+    }, 200);
   }
 
   async handleLogin({ username, password }) {
@@ -145,20 +157,20 @@ export class AppView extends EventEmitter {
       setTimeout(() => {
         this.setActiveView('login');
       }, 0);
-      
+
       console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');
     }
   }
 
   async handleSignup(creds) {
     const { username, password } = creds;
-  
+
     const res = await this.store.registerUser({ username, password });
 
     if (!!res) {
       this.setActiveView('chat-list');
     }
-   
+
     else this.setActiveView('login');
   }
 
