@@ -16,7 +16,6 @@ export class ViewHistory {
   }
 
   #pop() {
-    // const poppedItem = this.#items.pop();
     this.#items = [...this.#items].slice(1, this.#items.length - 1);
   }
 
@@ -66,34 +65,17 @@ class Router extends EventEmitter {
 
   get currentViewName() { return history.state.view }
 
-render() {
+  render() {
     const route = this.#routes.find(r => r.name == this.activeRoute.name);
 
     console.log('route', route)
     const view = route.view();
-    // const temp = template(this.activeRoute.name);
 
     this.#viewHistory.push(view.dom);
 
     this.#viewFrame.set(this.#viewHistory.head);
   }
 
-  // render() {
-  //   const temp = template(this.activeRoute.name);
-  //   const boundEls = [...temp.querySelectorAll('[data-bind]')]
-
-  //   boundEls.forEach((el, i) => {
-  //     const [attr, valueName] = el.dataset.bind.split(':');
-
-  //     if (attr === 'textContent') {
-  //       el.textContent = this[valueName];
-  //     }
-  //   });
-
-  //   this.#viewHistory.push(temp);
-
-  //   this.#viewFrame.set(this.#viewHistory.head);
-  // }
 
   onPopState(e) {}
 

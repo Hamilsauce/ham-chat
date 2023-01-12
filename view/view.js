@@ -1,4 +1,3 @@
-// import { AppObject } from '../lib/AppObject.js';
 import { AppObject } from '../lib/AppObject.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
 
@@ -16,8 +15,6 @@ export const ViewOptions = {
   elementProperties: ElementProperties,
   children: [],
 }
-
-
 
 export class View extends AppObject {
   #self;
@@ -38,8 +35,6 @@ export class View extends AppObject {
  
     this.bindData();
 
-    // this.#self = View.getTemplate(name);
-
     this.#selectedElement = this.dom;
   };
 
@@ -57,7 +52,6 @@ export class View extends AppObject {
     return template(name);
   }
 
-
   bindData() {
     const boundEls = [...this.dom.querySelectorAll('[data-bind]')]
 
@@ -70,6 +64,10 @@ export class View extends AppObject {
     });
 
   }
+  
+  // render() {
+    
+  // }
 
   selectElement(selector) {
     const el = this.$(selector);
@@ -84,6 +82,7 @@ export class View extends AppObject {
   setDomAttrs(attrs = {}) {
     const target = !!this.#selectedElement ? this.#selectedElement : this.dom;
     const { dataset, ...attrs2 } = attrs;
+   
     if (dataset) {
       Object.assign(target.dataset, dataset)
     }
@@ -92,12 +91,12 @@ export class View extends AppObject {
       Object.assign(target, attrs2)
     }
 
-
     return this;
   }
 
   deselectElement() {
     this.#selectedElement = this.dom;
+  
     return this;
   }
 

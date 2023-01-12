@@ -74,11 +74,5 @@ export class ChatroomView extends View {
     this.store.addMessage({ text: msg });
   }
 
-  // handleChatLoaded(chat) {
-  //   console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
-
-  //   // this.setActiveView('chat');
-  // }
-
   handleMessagesUpdate(messages) {}
 }

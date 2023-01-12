@@ -22,16 +22,19 @@ export class ChatList extends View {
       templateName: 'chat-list-view',
       elementProperties: {},
     });
+
     this.render();
 
     this.dom.addEventListener('click', e => {
       const targ = e.target.closest('.chat-list-item');
-      const dataset = targ.dataset
+
+      const dataset = targ.dataset;
 
       this.emit('select:chat', { id: targ.id });
-      this.store.setActiveChat(targ.id)
-      router.push('chatroom')
 
+      this.store.setActiveChat(targ.id);
+
+      router.push('chatroom');
 
       return;
     });
@@ -39,8 +42,7 @@ export class ChatList extends View {
 
   async render() {
     let chatData;
-    console.log('CHAT LIST RENDER');
-    console.log('await this.store.currentUser.chatrooms', await this.store.currentUser.chatrooms)
+    
     await setTimeout(async () => {
       chatData = await this.store.currentUser.chatrooms
 

@@ -9,7 +9,6 @@ export class ViewFrame {
   get activeView() { return this.dom.firstElementChild || null }
 
   set(renderedView) {
-    console.warn('IN VIEW FRAME SET', { renderedView, vf: this });
     if (!renderedView) return;
 
     if (this.activeView) {

@@ -9,34 +9,16 @@ export const routes = [
   {
     path: '/',
     name: 'login-view',
-    view: ()=> new LoginView() //template('login-view')
+    view: ()=> new LoginView(),
   },
   {
     path: '/chats',
     name: 'chat-list-view',
-    view: ()=> new ChatList() //template('chat-list-view')
+    view: ()=> new ChatList(),
   },
   {
     path: '/chatroom',
     name: 'chatroom-view',
-    view: ()=> new ChatroomView() //template('chatroom-view')
+    view: ()=> new ChatroomView(),
   },
 ];
-
-// export const routes = [
-//   {
-//     path: '/',
-//     name: 'login-view',
-//     template: template('login-view')
-//   },
-//   {
-//     path: '/chats',
-//     name: 'chat-list-view',
-//     template: template('chat-list-view')
-//   },
-//   {
-//     path: '/chatroom',
-//     name: 'chatroom-view',
-//     template: template('chatroom-view')
-//     },
-// ];

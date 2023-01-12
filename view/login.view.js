@@ -1,6 +1,5 @@
-// import { EventEmitter } from '../lib/event-emitter.js';
 import { store } from '../models/store.js';
-import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
+// import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
 import { router } from '../router/router.js';
 import { defineAction } from '../models/actions.js';
@@ -22,7 +21,7 @@ const InputEvents = {
 export class LoginView extends View {
   store = store;
   router = router;
-  
+
   constructor() {
     super('login-view', {
       templateName: 'login-view',
@@ -30,8 +29,6 @@ export class LoginView extends View {
     });
 
     this.display();
-
-    console.log('this.loginForm', this.loginForm)
 
     this.dom.addEventListener('click', e => {
       const targ = e.target;
@@ -88,22 +85,20 @@ export class LoginView extends View {
 
   async handleUserRegistered(event) {
     const res = await this.store.getUser({ username, password });
-    this.currentUser = res
-    console.warn('handleUserRegistered event', event)
+    this.currentUser = res;
+ 
     setTimeout(() => {
       this.loginModal.display('loginForm');
-      // this.setActiveView('chat-list');
       this.setActiveView('login');
     }, 200);
   }
 
   async handleLogin({ username, password }) {
     const res = await this.store.getUser({ username, password });
-    console.log('res', res)
+
     if (!!res) {
       this.currentUser = res;
       router.push('chats')
-      // this.setActiveView('chat-list');
     }
 
     else {
@@ -111,8 +106,6 @@ export class LoginView extends View {
         this.setActiveView('chat-list');
         this.setActiveView(null);
       }, 0);
-
-      console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');
     }
   }
 
