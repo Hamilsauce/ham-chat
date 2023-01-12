@@ -111,6 +111,19 @@ body {
 }
 
 
+#view-frame {
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed var(--black-primary);
+  overflow-y: scroll;
+  color: #F6F6F6D1;
+  border-radius: 6px;
+  background: var(--black-primary);
+
+  overflow: hidden;
+}
+
+
 #chat-list-container {
   display: flex;
   flex-direction: column;
@@ -302,7 +315,7 @@ body {
   gap: 0px;
 }
 
-#login-modal {
+#login-view {
   /* position: fixed; */
   top: 0;
   left: 0;
@@ -332,7 +345,7 @@ body {
   /* height: 100%; */
 }
 
-#login-modal label {
+#login-view label {
   padding: 8px;
   font-size: 18px;
   color: #EFEFEF;

@@ -17,8 +17,12 @@ export class ChatList extends View {
   store = store;
 
   constructor() {
-    super('chat-list');
-
+    super('chat-list', {
+      templateName: 'chat-list-view',
+      elementProperties: {},
+    });
+    this.render();
+   
     this.dom.addEventListener('click', e => {
       const targ = e.target.closest('.chat-list-item');
       const dataset = targ.dataset
@@ -30,7 +34,8 @@ export class ChatList extends View {
 
   async render() {
     let chatData;
-   
+    console.log('CHAT LIST RENDER');
+    console.log('await this.store.currentUser.chatrooms', await this.store.currentUser.chatrooms)
     await setTimeout(async () => {
       chatData = await this.store.currentUser.chatrooms
 
@@ -50,12 +55,12 @@ export class ChatList extends View {
 
   createItem(data) {
     const item = View.getTemplate('chat-list-item');
-  
+
     item.id = data.id;
-  
+
     item.querySelector('.chat-name').textContent = data.name;
     item.querySelector('.chat-detail').textContent = data.description;
-  
+
     return item;
   }
 
@@ -64,7 +69,7 @@ export class ChatList extends View {
   }
 
   get list() { return this.dom.querySelector('#chat-list') }
-  
+
   get show() { return this.input.value }
 
   set show(v) { this.input.value = v }

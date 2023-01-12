@@ -22,27 +22,25 @@ export class RouterTestApp extends EventEmitter {
     super();
 
     if (options && options !== RouterTestAppOptions && (options.tag || options.templateName)) this.#self = DOM.createElement(options);
-    
+
     else this.#self = document.querySelector('#app');
 
     if (!this.#self) throw new Error('Failed to find/load a router-app class template. Class/template name: ' + name);
-    
+
     this.#self.addEventListener('click', e => {
       this.emit('click', e)
     });
-    
-    
-    
   }
 
 
-  use(module = {}, options) {
+  use(module = {}, options = {}) {
     if (!(module && module.install)) throw new Error('Invalid module passed to use!');
-   
+
     /*
      * Pass routes in with options 
      */
-    module.install.call(this, options);
+
+    module.install(this, options);
   }
 
   get self() { return this.#self };

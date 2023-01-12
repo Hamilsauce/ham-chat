@@ -1,4 +1,5 @@
 // import { EventEmitter } from '../lib/event-emitter.js';
+import { store } from '../models/store.js';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
 
@@ -18,12 +19,17 @@ const InputEvents = {
   login: 'user:login'
 }
 
-export class LoginModal extends View {
-
-  constructor(id = 'login-modal') {
-    super('login-modal');
+export class LoginView extends View {
+store = store
+  constructor() {
+    super('login-view', {
+      templateName: 'login-view',
+      elementProperties: {},
+    });
 
     this.display();
+
+    console.log('this.loginForm', this.loginForm)
 
     this.dom.addEventListener('click', e => {
       const targ = e.target;
@@ -32,20 +38,20 @@ export class LoginModal extends View {
       if (targ.id === 'login-button') {
         this.display('loginForm');
       }
-      
+
       else if (targ.id === 'signup-button') {
         this.display('signupForm');
       }
-      
+
       else if (dataset.action && dataset.action.split(':')[1] === 'submit') {
         const submitType = dataset.action.split(':')[0]
 
         if (submitType == 'login') {
-          this.submitLogin.bind(this)(this.$('#login-username-input').value, this.$('#login-password-input').value)
+          this.handleLogin.bind(this)({ username: this.$('#login-username-input').value, password: this.$('#login-password-input').value })
         }
 
         else if (submitType === 'signup' && this.$('#signup-username-input').value) {
-          this.submitSignup.bind(this)(this.$('#signup-username-input').value, this.$('#signup-password-input').value)
+          this.handleSignup().bind(this)(this.$('#signup-username-input').value, this.$('#signup-password-input').value)
         }
       }
     });
@@ -76,6 +82,48 @@ export class LoginModal extends View {
   hide() {
     this.dom.remove();
   }
+
+
+  async handleUserRegistered(event) {
+    const res = await this.store.getUser({ username, password });
+    this.currentUser = res
+    console.warn('handleUserRegistered event', event)
+    setTimeout(() => {
+      this.loginModal.display('loginForm');
+      // this.setActiveView('chat-list');
+      this.setActiveView('login');
+    }, 200);
+  }
+
+  async handleLogin({ username, password }) {
+    const res = await this.store.getUser({ username, password });
+    console.log('res', res)
+    if (!!res) {
+      this.currentUser = res;
+      this.setActiveView('chat-list');
+    }
+    else {
+      setTimeout(() => {
+        this.setActiveView('chat-list');
+        this.setActiveView(null);
+      }, 0);
+
+      console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');
+    }
+  }
+
+  async handleSignup(creds) {
+    const { username, password } = creds;
+
+    const res = await this.store.registerUser({ username, password });
+
+    if (!!res) {
+      this.setActiveView('chat-list');
+    }
+
+    else this.setActiveView('login');
+  }
+
 
   submitLogin(username, password) {
     this.emit('login', { username, password });

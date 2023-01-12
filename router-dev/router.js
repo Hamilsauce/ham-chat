@@ -7,14 +7,17 @@ const { template, utils } = ham;
 export class ViewHistory {
   #items = [];
 
-  constructor() {}
+  constructor() {
+    this.pop = this.#pop.bind(this)
+  }
 
   push(view) {
     this.#items.push(view);
   }
 
-  pop() {
-    return this.#items.pop();
+  #pop() {
+    // const poppedItem = this.#items.pop();
+    this.#items = [...this.#items].slice(1, this.#items.length - 1);
   }
 
   get isEmpty() { return this.size <= 0 }
@@ -26,8 +29,6 @@ export class ViewHistory {
   get head() { return this.#items.length ? this.#items[this.#items.length - 1] : null }
 }
 
-
-console.log('{history, location}', { history, location })
 
 class Router extends EventEmitter {
   #routes = [];
@@ -44,8 +45,6 @@ class Router extends EventEmitter {
     this.handleRouterLinkClick = this.#handleRouterLinkClick.bind(this);
 
     this.#viewFrame = new ViewFrame();
-
-    this.#init();
 
     window.onpopstate = e => {
       this.pop();
@@ -68,18 +67,14 @@ class Router extends EventEmitter {
 
   get currentViewName() { return history.state.view }
 
-  render(_temp) {
-    const temp = template(this.activeRoute.name);
-    const boundEls = [...temp.querySelectorAll('[data-bind]')]
+  render() {
+    const route = this.#routes.find(r => r.name == this.activeRoute.name);
+    const view = route.view();
 
-    boundEls.forEach((el, i) => {
-      const [attr, valueName] = el.dataset.bind.split(':');
+    console.log('view', view)
+    // const temp = template(this.activeRoute.name);
 
-      if (attr === 'textContent') {
-        el.textContent = this[valueName];
-      }
-    });
-    this.#viewHistory.push(temp);
+    this.#viewHistory.push(view.dom);
 
     this.#viewFrame.set(this.#viewHistory.head);
   }
@@ -122,10 +117,11 @@ class Router extends EventEmitter {
   }
 
   replace(...urlSegments) {
-    const matchedRoute = this.#matchPath(urlSegments);
     const url = `${urlSegments.join('/')}`;
 
     if (url === this.currentPathName) return;
+
+    const matchedRoute = this.#matchPath(urlSegments);
 
     history.replaceState({ view: matchedRoute.name }, '', `${url}`);
 
@@ -134,7 +130,7 @@ class Router extends EventEmitter {
 
   #matchPath(urlSegments) {
     if (urlSegments.length === 1 && urlSegments[0] === '/' || urlSegments[0] === '') {
-      return this.#routes.find(_ => _.path === '/')
+      return this.#routes.find(_ => _.path === '/');
     }
 
     const matchedRoute = this.#routes.find(route => {
@@ -150,7 +146,21 @@ class Router extends EventEmitter {
     return matchedRoute;
   }
 
-  #init() { this.replace(''); }
+  init({ routes, origin }) {
+    this.#routes = routes;
+    this.origin = origin;
+
+    this.replace('');
+  }
+
+  install(app, options) {
+    app.on('click', this.handleRouterLinkClick);
+
+    this.init(options);
+    console.log('ROUTER INSTALL', this, this.#routes);
+    console.log('ACTIVE ROUTE', this.activeRoute);
+    return this;
+  }
 
   #handleRouterLinkClick(e) {
     const { target } = e;
@@ -164,16 +174,17 @@ class Router extends EventEmitter {
 
 
 
-let router = null;
+export const router = new Router()
 
-export const useRouter = (app, options) => {
-  const { routes, origin } = options;
 
-  if (router === null) {
-    router = new Router(origin, routes);
+// export const useRouter = (app, options) => {
+//   const { routes, origin } = options;
 
-    app.on('click', router.handleRouterLinkClick);
-  }
+//   if (router === null) {
+//     router = new Router(origin, routes);
 
-  return router;
-}
+//     app.on('click', router.handleRouterLinkClick);
+//   }
+
+//   return router;
+// }

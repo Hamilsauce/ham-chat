@@ -19,7 +19,7 @@ body {
 }
 
 #app {
-  position: relative;
+  /* position: relative; */
   display: grid;
   grid-template-rows: auto 1fr auto;
   grid-template-columns: 1fr;
