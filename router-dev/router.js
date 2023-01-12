@@ -1,9 +1,10 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
-const { template, utils } = ham;
-import { ViewFrame } from './view-frame.js';
+import { ViewFrame } from '../router/view-frame.js';
 
-export class ViewCache {
+const { template, utils } = ham;
+
+export class ViewHistory {
   #items = [];
 
   constructor() {}
@@ -18,78 +19,92 @@ export class ViewCache {
 
   get isEmpty() { return this.size <= 0 }
 
+  get items() { return this.#items }
+
   get size() { return this.#items.length }
 
   get head() { return this.#items.length ? this.#items[this.#items.length - 1] : null }
 }
 
 
+console.log('{history, location}', { history, location })
 
 class Router extends EventEmitter {
   #routes = [];
   previousPathName = null;
   origin = null;
+  #viewHistory = new ViewHistory();
   #viewFrame = null;
 
-  constructor() {
+  constructor(origin, routes) {
     super();
-
-    this.#viewFrame = new ViewFrame();
+    this.#routes = routes;
+    this.origin = origin;
 
     this.handleRouterLinkClick = this.#handleRouterLinkClick.bind(this);
 
+    this.#viewFrame = new ViewFrame();
+
     this.#init();
 
-
     window.onpopstate = e => {
-      console.warn('window.onpopstate', { e });
-      e.preventDefault()
-      e.stopPropagation();
-
-      this.pop()
+      this.pop();
     }
   }
 
-  get viewFrame() { return document.querySelector('#view-frame'); }
-
-  get activeViewName() { return this.viewFrame.firstElementChild ? this.viewFrame.firstElementChild.dataset.viewName : null; }
-
-  get activeView() { return this.viewFrame.firstElementChild }
-
   get routes() { return this.#routes }
+
+  get activeRoute() { return this.#routes.find(r => r.path === this.currentPathName) }
 
   get historySize() { return history.length }
 
-  get currentPathName() { return location.pathname.replace('/router/', '') }
+  get currentPathName() {
+    return location.pathname
+      .replace('router-dev', '')
+      .replace('router', '')
+      .replace('index.html', '')
+      .replace('//', '/');
+  }
 
-  render() {
-    // if (this.activeView) {
-    //   // this.#viewFrame.set(this.activeView)
-    //   // this.activeView.remove()
-    // }
+  get currentViewName() { return history.state.view }
 
-    const temp = template('active-route');
-
+  render(_temp) {
+    const temp = template(this.activeRoute.name);
     const boundEls = [...temp.querySelectorAll('[data-bind]')]
 
     boundEls.forEach((el, i) => {
       const [attr, valueName] = el.dataset.bind.split(':');
-      // console.log('attr, valueName', attr, valueName)
 
       if (attr === 'textContent') {
-        el.textContent = this[valueName]
+        el.textContent = this[valueName];
       }
     });
+    this.#viewHistory.push(temp);
 
-    this.#viewFrame.set(temp)
+    this.#viewFrame.set(this.#viewHistory.head);
   }
 
   onPopState(e) {}
 
+  go(delta) {
+    history.go(delta);
+  }
+
+  flip(back = 1, duration = 100) {
+    back = back > 0 ? -(back) : back;
+    history.go(back);
+
+    setTimeout(() => {
+      history.go(-(back));
+    }, duration);
+  }
+
   pop(e) {
-    console.log('history.length before back', history.length)
+    this.previousPathName = this.currentPathName;
+
+    this.#viewHistory.pop();
+
     this.render();
-    console.log('history.length after back', history.length)
   }
 
   push(...urlSegments) {
@@ -101,13 +116,9 @@ class Router extends EventEmitter {
 
     this.previousPathName = this.currentPathName
 
-    history.pushState({}, '', `${url}`);
+    history.pushState({ view: matchedRoute.name }, '', `${url}`);
 
     this.render();
-
-    console.warn('[END OF PUSH]: this.currentPathName', this.currentPathName)
-    console.warn({ history });
-    console.log('history.length after back', history.length)
   }
 
   replace(...urlSegments) {
@@ -116,16 +127,12 @@ class Router extends EventEmitter {
 
     if (url === this.currentPathName) return;
 
-    history.replaceState({}, '', `${url}`)
+    history.replaceState({ view: matchedRoute.name }, '', `${url}`);
 
     this.render();
-
-    console.warn('[END OF REPLACE]: this.currentPathName', this.currentPathName)
-    console.warn({ history });
   }
 
   #matchPath(urlSegments) {
-    console.log('matchPath', this)
     if (urlSegments.length === 1 && urlSegments[0] === '/' || urlSegments[0] === '') {
       return this.#routes.find(_ => _.path === '/')
     }
@@ -148,8 +155,8 @@ class Router extends EventEmitter {
   #handleRouterLinkClick(e) {
     const { target } = e;
     const routerLink = e.target.closest('[data-router-link]');
+
     if (routerLink) {
-      console.warn('handleRouterLinkClick')
       this.push(routerLink.dataset.path);
     }
   }

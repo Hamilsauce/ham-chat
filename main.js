@@ -138,9 +138,9 @@ export class AppView extends EventEmitter {
   async handleUserRegistered(event) {
     const res = await this.store.getUser({ username, password });
     this.currentUser = res
- console.warn('handleUserRegistered event', event)
+    console.warn('handleUserRegistered event', event)
     setTimeout(() => {
-    this.loginModal.display('loginForm');
+      this.loginModal.display('loginForm');
       // this.setActiveView('chat-list');
       this.setActiveView('login');
     }, 200);
@@ -148,14 +148,15 @@ export class AppView extends EventEmitter {
 
   async handleLogin({ username, password }) {
     const res = await this.store.getUser({ username, password });
-
+    console.log('res', res)
     if (!!res) {
       this.currentUser = res;
       this.setActiveView('chat-list');
     }
     else {
       setTimeout(() => {
-        this.setActiveView('login');
+        this.setActiveView('chat-list');
+        this.setActiveView(null);
       }, 0);
 
       console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');

@@ -30,6 +30,9 @@ export class RouterTestApp extends EventEmitter {
     this.#self.addEventListener('click', e => {
       this.emit('click', e)
     });
+    
+    
+    
   }
 
 

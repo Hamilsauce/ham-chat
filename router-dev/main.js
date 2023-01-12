@@ -5,14 +5,22 @@ import { routes } from './routes.js';
 
 // console.log('history', history)
 
-// const app = document.querySelector('#app');
+const appEl = document.querySelector('#app');
 const nav = document.querySelector('#nav');
 const appBody = document.querySelector('#app-body')
 const containers = document.querySelectorAll('.container')
 
 const app = new RouterTestApp()
-const router = useRouter(app,{routes, origin: 'router'})
+const router = useRouter(app, { routes, origin: 'router' })
 // app.use(router, {routes, origin: 'router'})
+
+// setTimeout(() => {
+//   setInterval(() => {
+//     router.flip(1)
+//     console.log(' ', );
+//   }, 1000)
+// }, 2000)
+
 
 
 // nav.addEventListener('click', e => {
