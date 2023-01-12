@@ -1,6 +1,7 @@
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
 import { store } from '../models/store.js';
+import { router } from '../router/router.js';
 
 import { defineAction } from '../models/actions.js';
 
@@ -22,13 +23,17 @@ export class ChatList extends View {
       elementProperties: {},
     });
     this.render();
-   
+
     this.dom.addEventListener('click', e => {
       const targ = e.target.closest('.chat-list-item');
       const dataset = targ.dataset
 
-      this.emit('select:chat', { id: targ.id })
-      return
+      this.emit('select:chat', { id: targ.id });
+      this.store.setActiveChat(targ.id)
+      router.push('chatroom')
+
+
+      return;
     });
   }
 

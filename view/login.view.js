@@ -2,7 +2,7 @@
 import { store } from '../models/store.js';
 import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
-
+import { router } from '../router/router.js';
 import { defineAction } from '../models/actions.js';
 
 const Login = defineAction('login', {
@@ -20,7 +20,9 @@ const InputEvents = {
 }
 
 export class LoginView extends View {
-store = store
+  store = store;
+  router = router;
+  
   constructor() {
     super('login-view', {
       templateName: 'login-view',
@@ -100,8 +102,10 @@ store = store
     console.log('res', res)
     if (!!res) {
       this.currentUser = res;
-      this.setActiveView('chat-list');
+      router.push('chats')
+      // this.setActiveView('chat-list');
     }
+
     else {
       setTimeout(() => {
         this.setActiveView('chat-list');

@@ -9,18 +9,15 @@ const { fromFetch } = rxjs.fetch;
 export class ChatroomView extends View {
   store = store;
   inputBar = new InputBar();
+  messageSubscription = null;
 
   constructor() {
     super('chatroom', {
-      templateName: 'chatroom',
+      templateName: 'chatroom-view',
       elementProperties: {},
     });
 
-    this.messageBoxEl = document.createElement('div');
-    this.messageBoxEl.id = 'chatMessages';
-
     this.store.on('messages:update', this.handleMessagesUpdate.bind(this));
-    this.store.on('chat:loaded', this.handleChatLoaded.bind(this));
 
     this.inputBar.on('message:send', this.handleMessageSent.bind(this));
 
@@ -29,14 +26,20 @@ export class ChatroomView extends View {
         map(this.renderMessages.bind(this)),
       );
 
+    this.store.on('chat:loaded', this.init.bind(this));
+
     this.init();
   }
 
+  get messageBoxEl() { return this.$('#chatMessages') }
+  
   get messageEls() { return [...this.messageBoxEl.querySelectorAll('.message')] }
 
   get lastMessageEl() { return this.messageEls[this.messageEls.length - 1] }
 
-  async init() {}
+  async init() {
+    this.messageSubscription = this.messages$.subscribe()
+  }
 
   clearMessages() {
     this.messageBoxEl.innerHTML = '';
@@ -71,11 +74,11 @@ export class ChatroomView extends View {
     this.store.addMessage({ text: msg });
   }
 
-  handleChatLoaded(chat) {
-    console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
+  // handleChatLoaded(chat) {
+  //   console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
 
-    this.setActiveView('chat');
-  }
+  //   // this.setActiveView('chat');
+  // }
 
   handleMessagesUpdate(messages) {}
 }
