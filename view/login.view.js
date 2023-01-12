@@ -46,11 +46,17 @@ export class LoginView extends View {
         const submitType = dataset.action.split(':')[0]
 
         if (submitType == 'login') {
-          this.handleLogin.bind(this)({ username: this.$('#login-username-input').value, password: this.$('#login-password-input').value })
+          this.handleLogin.bind(this)({
+            username: this.$('#login-username-input').value,
+            password: this.$('#login-password-input').value
+          })
         }
 
         else if (submitType === 'signup' && this.$('#signup-username-input').value) {
-          this.handleSignup().bind(this)(this.$('#signup-username-input').value, this.$('#signup-password-input').value)
+          this.handleSignup.bind(this)({
+            username: this.$('#signup-username-input').value,
+            password: this.$('#signup-password-input').value
+          })
         }
       }
     });
@@ -86,10 +92,10 @@ export class LoginView extends View {
   async handleUserRegistered(event) {
     const res = await this.store.getUser({ username, password });
     this.currentUser = res;
- 
+
     setTimeout(() => {
       this.loginModal.display('loginForm');
-      this.setActiveView('login');
+      // this.setActiveView('login');
     }, 200);
   }
 
@@ -113,12 +119,16 @@ export class LoginView extends View {
     const { username, password } = creds;
 
     const res = await this.store.registerUser({ username, password });
+    // console.log('res', res)
 
     if (!!res) {
-      this.setActiveView('chat-list');
+     this.display('loginForm');
+     this.$('#login-username-input').value = res
+     this.$('#login-password-input').focus()
+      // router.push('chats');
     }
 
-    else this.setActiveView('login');
+    else this.display('loginForm');
   }
 
 
@@ -129,8 +139,8 @@ export class LoginView extends View {
   }
 
   submitSignup(username, password) {
-    console.log('this.emit(signup, username, password)', this.emit('signup', username, password))
-    console.warn('signup', username, password);
+    // console.log('this.emit(signup, username, password)', this.emit('signup', username, password))
+    // console.warn('signup', username, password);
     this.emit('signup', { username, password });
 
     this.hide();

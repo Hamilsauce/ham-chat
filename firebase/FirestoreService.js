@@ -21,13 +21,13 @@ class FirestoreService {
 
     this.messages$ = this.#messagesSubject$.asObservable()
       .pipe(
-        tap(x => console.warn('messages$', x)),
+        // tap(x => console.warn('messages$', x)),
         distinctUntilChanged((prev, curr) => prev.length === curr.length),
         shareReplay(1),
       )
 
-    cnt = cnt + 1
-    console.warn('IN FS Service Constructor', { cnt }, this);
+    // cnt = cnt + 1
+    // console.warn('IN FS Service Constructor', { cnt }, this);
   }
 
   get Timestamp() {

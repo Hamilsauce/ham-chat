@@ -75,9 +75,10 @@ class Store extends EventEmitter {
   }
 
   async registerUser({ username, password }) {
-    await Firestore.addUser({ username, password, chatrooms: [Firestore.createDocumentRef(this.generalChatDocPath)] });
+  const res =  await Firestore.addUser({ username, password, chatrooms: [Firestore.createDocumentRef(this.generalChatDocPath)] });
 
     this.emit('user:registered');
+    return res;
   }
 
   async getUser({ username, password }) {
