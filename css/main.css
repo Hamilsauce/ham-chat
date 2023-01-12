@@ -17,46 +17,6 @@ body {
   /* min-width:100vw;min-height:100vh; */
 }
 
-#app {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-  grid-template-columns: 1fr;
-  gap: 0px;
-
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  background: #303138;
-
-  background-image: linear-gradient(20deg, #324172, #13192126),
-    linear-gradient(to bottom, #0F1D3D, #263D4C45),
-    linear-gradient(to bottom, #1D3244, #1E20288C);
-  /* background-blend-mode: initial,
-     color-dodge; */
-  background-repeat: no-repeat,
-    no-repeat,
-    no-repeat;
-  background-position: bottom right,
-    left,
-    right;
-}
-
-.app-button {
-  padding: 8px 32px;
-  color: #374467;
-  font-size: 1.2em;
-  font-weight: 700;
-  background: #F0F0F0;
-  border: none;
-  border-radius: 6px;
-  box-shadow: 0 2px 12px 2px #2A3F84BA;
-  text-decoration: wavy;
-}
-
-.app-button.large {
-  width: 100%;
-  padding: 12px 64px;
-}
 
 .app-form {
   display: flex;
@@ -74,41 +34,6 @@ body {
   /* height: 100%; */
 }
 
-#app-header {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  grid-template-rows: 1fr;
-  gap: 0px;
-  padding: 8px;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  color: #EBEBED;
-}
-
-#app-header-center {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  gap: 0px;
-
-}
-
-#app-body {
-  display: grid;
-  grid-template-rows: auto 1fr auto;
-
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  gap: 0px;
-  width: 100%;
-  height: 100%;
-  /* background: #22193733; */
-  /* border: 1px solid #EAEAEA; */
-  overflow: hidden;
-  overflow: scroll;
-}
 
 
 #view-frame {
@@ -207,19 +132,6 @@ body {
   padding: 8px;
 }
 
-
-#app-footer {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: 1fr;
-  gap: 0px;
-
-  width: 100%;
-  height: 100%;
-  background: #161A34;
-
-  overflow: hidden;
-}
 
 #inputMenu {
   /* padding: 6px; */
