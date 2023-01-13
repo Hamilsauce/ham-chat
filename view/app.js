@@ -13,6 +13,12 @@ export class App extends View {
     document.querySelector('#app').replaceWith(this.dom)
 
     this.dom.addEventListener('click', e => {
+      const targ = e.target.closest('#app-title');
+
+      if (targ) {
+        this.dom.classList.toggle('aux');
+      }
+
       this.emit('click', e)
     });
   }
