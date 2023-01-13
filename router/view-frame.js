@@ -6,7 +6,7 @@ export class ViewFrame {
     this.dom = document.querySelector('#view-frame');
   }
 
-  get activeView() { return this.dom.firstElementChild || null }
+  get activeView() { return (this.dom||{}).firstElementChild || null }
 
   set(renderedView) {
     if (!renderedView) return;

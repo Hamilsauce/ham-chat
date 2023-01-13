@@ -58,9 +58,10 @@ body {
   align-items: center;
   gap: 0px;
   padding: 6px 16px;
-  /* background: var(--black-primary); */
+  background: var(--black-primary);
   border: 1px solid #626262;
   border-radius: 3px;
+  color: #F00909;
   color: #F6F6F6;
   font-size: 18px;
   font-weight: 500;
@@ -86,7 +87,8 @@ body {
   color: #374467;
   font-size: 1.1em;
   font-weight: 700;
-  /* background: #F0F0F0; */
+  background: #F0F0F0;
+  
   border: none;
   border-radius: 6px;
   box-shadow: 0 2px 8px 1px #535A71BA;
@@ -107,15 +109,15 @@ body {
   padding: 4px;
 } */
 
-/* .aux #app-body {
+.aux #app-body {
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
   grid-template-columns: 1fr;
   gap: 4px;
   padding: 8px;
   overflow-y: hidden;
-    background: var(--black-primary);
-} */
+  /* background: var(--black-primary); */
+}
 
 /* .aux #nav {
   display: flex;
@@ -141,11 +143,17 @@ body {
   /* height: 100%; */
   /* border: 1.5px dashed var(--black-primary); */
   /* overflow-y: scroll; */
-  color: #F6F6F6D1;
+  color: #F6F6F6;
   /* border-radius: 6px; */
   background: var(--black-primary);
+  /* filter: invert(1); */
 
   /* overflow: hidden; */
+}
+
+.aux #view-frame>* {
+  /* filter: invert(0.9); */
+  /* color: white; */
 }
 
 /* .aux #active-route {

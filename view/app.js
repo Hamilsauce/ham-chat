@@ -1,5 +1,6 @@
 import { View, ViewOptions } from './view.js';
 import ham from 'https://hamilsauce.github.io/hamhelper/hamhelper1.0.0.js';
+import { store } from '../models/store.js';
 
 const { template, DOM, utils } = ham;
 
