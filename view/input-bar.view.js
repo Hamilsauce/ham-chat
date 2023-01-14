@@ -1,6 +1,5 @@
-import { EventEmitter } from '../lib/event-emitter.js';
+import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { View } from './view.js';
-
 
 const InputEvents = {
   send: 'message:send'
@@ -31,10 +30,6 @@ export class InputBar extends EventEmitter {
   }
 
   init(eventMap = {}) {
-    for (var prop in eventMap) {
-      this.registerEvent(eventMap[prop]);
-    }
-
     console.log(this);
   }
 

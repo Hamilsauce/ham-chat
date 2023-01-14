@@ -1,4 +1,4 @@
-import { EventEmitter } from '../lib/event-emitter.js';
+import { EventEmitter } from 'https://hamilsauce.github.io/hamhelper/event-emitter.js';
 import { messagesSeed } from '../data/message-seed.js';
 import { coerceData } from '../lib/coerce.js';
 import { localStore } from '../datastore/localStore.service.js';

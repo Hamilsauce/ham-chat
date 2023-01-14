@@ -8,6 +8,7 @@ import { defineAction } from '../models/actions.js';
 const SelectChat = defineAction('select:chat', {
   id: String,
 });
+
 const RemoveChat = defineAction('remove:chat', {
   id: String,
 });
@@ -27,7 +28,9 @@ export class ChatList extends View {
 
     this.dom.addEventListener('click', e => {
       const targ = e.target.closest('.chat-list-item');
-
+    
+      if (!targ) return;
+  
       const dataset = targ.dataset;
 
       this.emit('select:chat', { id: targ.id });
@@ -42,7 +45,7 @@ export class ChatList extends View {
 
   async render() {
     let chatData;
-    
+
     await setTimeout(async () => {
       chatData = await this.store.currentUser.chatrooms
 

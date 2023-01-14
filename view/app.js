@@ -22,6 +22,8 @@ export class App extends View {
 
       this.emit('click', e)
     });
+    
+    console.log('piss');
   }
 
   use(module = {}, options = {}) {
