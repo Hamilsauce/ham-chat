@@ -1,10 +1,3 @@
-// import {
-//   ChatList,
-//   ChatroomView,
-//   LoginView,
-//   InputBar
-// } from './index.js';
-
 const ViewRegistery = new Map();
 
 const register = (name, View) => {

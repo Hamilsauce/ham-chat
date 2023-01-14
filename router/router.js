@@ -38,11 +38,12 @@ class Router extends EventEmitter {
 
   constructor(origin, routes) {
     super();
+   
     this.#routes = routes;
+   
     this.origin = origin;
 
     this.handleRouterLinkClick = this.#handleRouterLinkClick.bind(this);
-
 
     window.onpopstate = e => {
       this.pop();
@@ -68,14 +69,12 @@ class Router extends EventEmitter {
   render() {
     const route = this.#routes.find(r => r.name == this.activeRoute.name);
 
-    console.log('route', route)
     const view = route.view();
 
     this.#viewHistory.push(view.dom);
 
     this.#viewFrame.set(this.#viewHistory.head);
   }
-
 
   onPopState(e) {}
 

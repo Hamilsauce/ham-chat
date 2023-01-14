@@ -16,176 +16,172 @@ const firebaseUrl = 'https://www.gstatic.com/firebasejs/8.10.1/firebase-firestor
 // }, 3000)
 
 
-export class AppView extends EventEmitter {
-  currentUser;
-  store = store;
-  inputBar = new InputBar();
-  chatList = new ChatList();
-  loginModal = new LoginModal();
+// export class AppView extends EventEmitter {
+//   currentUser;
+//   store = store;
+//   inputBar = new InputBar();
+//   chatList = new ChatList();
+//   loginModal = new LoginModal();
 
-  constructor() {
-    super();
+//   constructor() {
+//     super();
 
-    this.self = document.querySelector('#app');
-    this.messageBoxEl = document.createElement('div');
-    this.messageBoxEl.id = 'chatMessages';
+//     this.self = document.querySelector('#app');
+//     this.messageBoxEl = document.createElement('div');
+//     this.messageBoxEl.id = 'chatMessages';
 
-    this.store.on('messages:update', this.handleMessagesUpdate.bind(this));
-    this.store.on('chat:loaded', this.handleChatLoaded.bind(this));
-    this.store.on('user:registered', this.handleUserRegistered.bind(this));
-    this.store.on('user:authenticated', this.handleUserRegistered.bind(this));
+//     this.store.on('messages:update', this.handleMessagesUpdate.bind(this));
+//     this.store.on('chat:loaded', this.handleChatLoaded.bind(this));
+//     this.store.on('user:registered', this.handleUserRegistered.bind(this));
+//     this.store.on('user:authenticated', this.handleUserRegistered.bind(this));
 
-    this.inputBar.on('message:send', this.handleMessageSent.bind(this));
-    this.loginModal.on('login', this.handleLogin.bind(this));
-    this.loginModal.on('signup', this.handleSignup.bind(this));
-    this.chatList.on('select:chat', this.handleChatSelected.bind(this));
+//     this.inputBar.on('message:send', this.handleMessageSent.bind(this));
+//     this.loginModal.on('login', this.handleLogin.bind(this));
+//     this.loginModal.on('signup', this.handleSignup.bind(this));
+//     this.chatList.on('select:chat', this.handleChatSelected.bind(this));
 
-    this.viewCache = {
-      chat: null
-    };
+//     this.viewCache = {
+//       chat: null
+//     };
 
-    this.messages$ = this.store.messageStream$
-      .pipe(
-        map(this.renderMessages.bind(this)),
-      );
+//     this.messages$ = this.store.messageStream$
+//       .pipe(
+//         map(this.renderMessages.bind(this)),
+//       );
 
-    this.init();
-  }
+//     this.init();
+//   }
 
-  get currentViewId() { return this.activeView.firstElementChild ? this.activeView.firstElementChild.id : null }
+//   get currentViewId() { return this.activeView.firstElementChild ? this.activeView.firstElementChild.id : null }
 
-  get messageEls() { return [...this.messageBoxEl.querySelectorAll('.message')] }
+//   get messageEls() { return [...this.messageBoxEl.querySelectorAll('.message')] }
 
-  get lastMessageEl() { return this.messageEls[this.messageEls.length - 1] }
+//   get lastMessageEl() { return this.messageEls[this.messageEls.length - 1] }
 
-  get activeView() { return document.querySelector('#active-view'); }
+//   get activeView() { return document.querySelector('#active-view'); }
 
-  get headerTitle() { return document.querySelector('#app-header-title'); }
+//   get headerTitle() { return document.querySelector('#app-header-title'); }
 
-  async init() {
-    if (this.store.env === 'test') {
-      await this.handleLogin({ username: 'pooman', password: '123' });
+//   async init() {
+//     if (this.store.env === 'test') {
+//       await this.handleLogin({ username: 'pooman', password: '123' });
 
-      this.setActiveView('chat-list');
-    }
+//       this.setActiveView('chat-list');
+//     }
 
-    else this.setActiveView('login');
-  }
+//     else this.setActiveView('login');
+//   }
 
-  clearMessages() {
-    this.messageBoxEl.innerHTML = '';
-  }
+//   clearMessages() {
+//     this.messageBoxEl.innerHTML = '';
+//   }
 
-  async setActiveView(viewName) {
-    viewName = viewName === null ? 'login' : viewName;
-    if (this.currentViewName === viewName) return;
-    this.currentViewName = viewName
-    // console.log('viewName', viewName)
-    // console.log('this.currentViewName', this.currentViewName)
-    // console.log('this.activeView', this.activeView)
+//   // async setActiveView(viewName) {
+//   //   viewName = viewName === null ? 'login' : viewName;
+//   //   if (this.currentViewName === viewName) return;
+//   //   this.currentViewName = viewName
+//   //   // console.log('viewName', viewName)
+//   //   // console.log('this.currentViewName', this.currentViewName)
+//   //   // console.log('this.activeView', this.activeView)
 
-    if (viewName == 'chat') {
-      this.messages$.subscribe();
+//   //   if (viewName == 'chat') {
+//   //     this.messages$.subscribe();
 
-      if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
-      this.activeView.append(this.messageBoxEl);
-    }
-    else if (viewName == 'login') {
-      this.activeView.append(this.loginModal.dom);
-    }
-    else if (viewName == 'chat-list') {
-      this.activeView.append(await this.chatList.render());
-    }
+//   //     if (this.activeView.firstElementChild) this.activeView.firstElementChild.remove()
+//   //     this.activeView.append(this.messageBoxEl);
+//   //   }
+//   //   else if (viewName == 'login') {
+//   //     this.activeView.append(this.loginModal.dom);
+//   //   }
+//   //   else if (viewName == 'chat-list') {
+//   //     this.activeView.append(await this.chatList.render());
+//   //   }
 
-    this.headerTitle.textContent = this.activeView.firstElementChild.dataset.viewName || this.store.activeChat.name
-  }
+//   //   this.headerTitle.textContent = this.activeView.firstElementChild.dataset.viewName || this.store.activeChat.name
+//   // }
 
-  renderMessages(msgs) {
-    if (!msgs) return;
+//   renderMessages(msgs) {
+//     if (!msgs) return;
 
-    console.time('renderMessages');
+//     console.time('renderMessages');
 
-    this.messageBoxEl.innerHTML = `${
-        msgs.reduce((template, curr) => {
-          return `${template}
-          <div class="message">
-            <div class="messageTop">${curr.from || 'Anon'}</div>
-            <div class="messageMiddle">${curr.text || ''}</div>
-            <div class="messageBottom">${curr.createdDate || 'no date'}</div>
-          </div>`;
-        },'')
-      }`;
+//     this.messageBoxEl.innerHTML = `${
+//         msgs.reduce((template, curr) => {
+//           return `${template}
+//           <div class="message">
+//             <div class="messageTop">${curr.from || 'Anon'}</div>
+//             <div class="messageMiddle">${curr.text || ''}</div>
+//             <div class="messageBottom">${curr.createdDate || 'no date'}</div>
+//           </div>`;
+//         },'')
+//       }`;
 
-    console.timeEnd('renderMessages');
+//     console.timeEnd('renderMessages');
 
-    setTimeout(() => {
-      if (this.lastMessageEl) {
-        this.lastMessageEl.scrollIntoView({ behavior: 'smooth' });
-      }
-    }, 100);
-  }
+//     setTimeout(() => {
+//       if (this.lastMessageEl) {
+//         this.lastMessageEl.scrollIntoView({ behavior: 'smooth' });
+//       }
+//     }, 100);
+//   }
 
-  handleMessageSent(msg) {
-    this.store.addMessage({ text: msg });
-  }
+//   handleMessageSent(msg) {
+//     this.store.addMessage({ text: msg });
+//   }
 
-  handleChatLoaded(chat) {
-    console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
+//   handleChatLoaded(chat) {
+//     console.warn('[[ HEARD CHAT:LOADED IN MAIN HANDLER]]', { chat });
 
-    this.setActiveView('chat');
-  }
+//     this.setActiveView('chat');
+//   }
 
-  async handleUserRegistered(event) {
-    const res = await this.store.getUser({ username, password });
-    this.currentUser = res
-    console.warn('handleUserRegistered event', event)
-    setTimeout(() => {
-      this.loginModal.display('loginForm');
-      // this.setActiveView('chat-list');
-      this.setActiveView('login');
-    }, 200);
-  }
+//   async handleUserRegistered(event) {
+//     const res = await this.store.getUser({ username, password });
+//     this.currentUser = res
+//     console.warn('handleUserRegistered event', event)
+//     setTimeout(() => {
+//       this.loginModal.display('loginForm');
+//       // this.setActiveView('chat-list');
+//       this.setActiveView('login');
+//     }, 200);
+//   }
 
-  async handleLogin({ username, password }) {
-    const res = await this.store.getUser({ username, password });
-    console.log('res', res)
-    if (!!res) {
-      this.currentUser = res;
-      this.setActiveView('chat-list');
-    }
-    else {
-      setTimeout(() => {
-        this.setActiveView('chat-list');
-        this.setActiveView(null);
-      }, 0);
+//   async handleLogin({ username, password }) {
+//     const res = await this.store.getUser({ username, password });
+//     console.log('res', res)
+//     if (!!res) {
+//       this.currentUser = res;
+//       this.setActiveView('chat-list');
+//     }
+//     else {
+//       setTimeout(() => {
+//         this.setActiveView('chat-list');
+//         this.setActiveView(null);
+//       }, 0);
 
-      console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');
-    }
-  }
+//       console.error('[MAIN.JS HANDLE LOGIN]: FAILED TO AUTHENTICATE USER');
+//     }
+//   }
 
-  async handleSignup(creds) {
-    const { username, password } = creds;
+//   async handleSignup(creds) {
+//     const { username, password } = creds;
 
-    const res = await this.store.registerUser({ username, password });
+//     const res = await this.store.registerUser({ username, password });
 
-    if (!!res) {
-      this.setActiveView('chat-list');
-    }
+//     if (res) {
+//       // this.setActiveView('chat-list');
+//     }
 
-    else this.setActiveView('login');
-  }
+//     // else this.setActiveView('login');
+//   }
 
-  async handleChatSelected({ id }) {
-    await this.store.setActiveChat(id);
-  }
+//   async handleChatSelected({ id }) {
+//     await this.store.setActiveChat(id);
+//   }
 
-  handleMessagesUpdate(messages) {}
-}
+//   handleMessagesUpdate(messages) {}
+// }
 
 
 
 const chatApp = new AppView();
-
-window.onbeforeunload = (e) => {
-  store.unsubscribeMessages()
-}

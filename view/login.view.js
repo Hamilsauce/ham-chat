@@ -101,16 +101,17 @@ export class LoginView extends View {
 
   async handleLogin({ username, password }) {
     const res = await this.store.getUser({ username, password });
-
-    if (!!res) {
+console.log('res', res)
+    if (res) {
       this.currentUser = res;
       router.push('chats')
     }
 
     else {
       setTimeout(() => {
-        this.setActiveView('chat-list');
-        this.setActiveView(null);
+        this.display('loginForm')
+        // this.setActiveView('chat-list');
+        // this.setActiveView(null);
       }, 0);
     }
   }
