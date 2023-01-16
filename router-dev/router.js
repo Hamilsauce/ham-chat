@@ -73,8 +73,10 @@ class Router extends EventEmitter {
 
     console.log('view', view)
     // const temp = template(this.activeRoute.name);
+    
 
     this.#viewHistory.push(view.dom);
+
 
     this.#viewFrame.set(this.#viewHistory.head);
   }

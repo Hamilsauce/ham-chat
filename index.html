@@ -99,7 +99,14 @@
   </template> -->
 
 
+  <template id="user-fab-template" data-template="user-fab">
+    <div id="user-fab">
+      <div id="user-fab-content">JH</div>
+    </div>
+  </template>
+
   <template id="app-template" data-template="app">
+
     <div id="app">
       <header id="app-header">
         <div id="app-header-left">L</div>
@@ -107,9 +114,9 @@
           <h1 id="app-title">ham chat</h1>
         </div>
         <div id="app-header-right">
-          <div id="user-fab">
+          <!-- <div id="user-fab">
             JH
-          </div>
+          </div> -->
         </div>
       </header>
 
@@ -118,6 +125,7 @@
         <!-- <div class="container">
         </div> -->
       </section>
+
 
       <footer id="app-footer">
         <!-- <div id="inputMenu"></div> -->
@@ -182,10 +190,19 @@
     </section>
   </template>
 
+  <template id="message-template" data-template="message">
+    <div class="message" data-view-name="message">
+        <div data-bind="textContent:from" class="messageTop">${curr.from || 'Anon'}</div>
+        <div data-bind="textContent:text" class="messageMiddle">${curr.text || ''}</div>
+        <div data-bind="textContent:createdDate" class="messageBottom">${curr.createdDate || 'no date'}</div>
+    </div>
+  </template>
+
   <template id="chat-list-view-template" data-template="chat-list">
     <section id="chat-list-container" data-view-name="Chats">
       <ul id="chat-list"></ul>
     </section>
+    <!-- <div class="chat-list-view"></div> -->
   </template>
 
   <template id="chat-list-item-template" data-template="chat-list-item">

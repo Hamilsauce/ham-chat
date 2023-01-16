@@ -21,13 +21,9 @@ class FirestoreService {
 
     this.messages$ = this.#messagesSubject$.asObservable()
       .pipe(
-        // tap(x => console.warn('messages$', x)),
-        distinctUntilChanged((prev, curr) => prev.length === curr.length),
+        // scan((msgs, msg) => msgs.concat(msg), []),
         shareReplay(1),
       )
-
-    // cnt = cnt + 1
-    // console.warn('IN FS Service Constructor', { cnt }, this);
   }
 
   get Timestamp() {
@@ -135,7 +131,7 @@ class FirestoreService {
   }
 
   listenOnMessages(chatId) {
-    let msgs;
+    let msgs = [];
 
     this.messageListener = this.chatrooms
       .doc(chatId)
@@ -144,7 +140,7 @@ class FirestoreService {
 
     this.unsubscribeMessages = this.messageListener
       .onSnapshot(snap => {
-        msgs = snap.docs.map(doc => {
+        msgs = snap.docChanges().map(({ doc }) => {
           const d = doc.data();
 
           d.createdDate = `${new Date(d.createdDate).toLocaleDateString()} ${new Date(d.createdDate).toLocaleTimeString()}`
@@ -152,10 +148,24 @@ class FirestoreService {
           return d;
         });
 
-        console.warn('[listenOnMessages]: snapshot', { snap })
+        console.warn('[listenOnMessages]: snapshot', { snap , msgs},)
 
         this.#messagesSubject$.next(msgs);
       });
+
+    // db.collection("cities").where("state", "==", "CA").onSnapshot((snapshot) => {
+    //     snapshot.docChanges().forEach((change) => {
+    //       if (change.type === "added") {
+    //         console.log("New city: ", change.doc.data());
+    //       }
+    //       if (change.type === "modified") {
+    //         console.log("Modified city: ", change.doc.data());
+    //       }
+    //       if (change.type === "removed") {
+    //         console.log("Removed city: ", change.doc.data());
+    //       }
+    //     });
+    //   });
 
     return this.unsubscribeMessages;
   }

@@ -13,6 +13,8 @@ export class AppHeader extends View {
       templateName: 'app-header',
       elementProperties: {},
     });
+    
+    console.warn('APP HEADER CONSTRUCTOR');
   }
 
   async init() {

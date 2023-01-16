@@ -1,5 +1,6 @@
-import db from './firebase.js'
-export const firestoreBatchUpdate = async (collectionName, data, updateFn = (doc) => {return doc}) => {
+import db from './firebase.js';
+
+export const firestoreBatchUpdate = async (collectionName, data, updateFn = (doc) => { return doc }) => {
   if (!collectionName) return;
   console.log('(collectionName, data) => {', (collectionName, data))
   let batchCount = Math.round(data.length / 500)
@@ -10,6 +11,7 @@ export const firestoreBatchUpdate = async (collectionName, data, updateFn = (doc
   console.log(`batchCount , batchCursor, cursor`);
   console.table([batchCount, batchCursor, cursor])
   console.log({ db });
+  
   while (batchCursor <= batchCount && cursor < data.length) {
     // console.log(' collction', collection)
 

@@ -38,9 +38,9 @@ class Router extends EventEmitter {
 
   constructor(origin, routes) {
     super();
-   
+
     this.#routes = routes;
-   
+
     this.origin = origin;
 
     this.handleRouterLinkClick = this.#handleRouterLinkClick.bind(this);
@@ -70,10 +70,14 @@ class Router extends EventEmitter {
     const route = this.#routes.find(r => r.name == this.activeRoute.name);
 
     const view = route.view();
+    console.warn('this.#viewHistory.head ', this.#viewHistory.head)
+    if (this.#viewHistory.head && this.#viewHistory.head.remove) {
+      this.#viewHistory.head.remove()
+    }
 
-    this.#viewHistory.push(view.dom);
+    this.#viewHistory.push(view);
 
-    this.#viewFrame.set(this.#viewHistory.head);
+    this.#viewFrame.set(this.#viewHistory.head.dom);
   }
 
   onPopState(e) {}
@@ -93,6 +97,9 @@ class Router extends EventEmitter {
 
   pop(e) {
     this.previousPathName = this.currentPathName;
+    if (this.#viewHistory.head && this.#viewHistory.head.remove) {
+      this.#viewHistory.head.remove()
+    }
 
     this.#viewHistory.pop();
 

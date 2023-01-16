@@ -43,6 +43,8 @@ class Store extends EventEmitter {
     this.messageStream$ = Firestore.messages$
       .pipe(
         tap(msg => msg.createdDate = `${new Date(msg.createdDate).toLocaleDateString()} ${new Date(msg.createdDate).toLocaleTimeString()}`),
+        // map(msg => [...this.state.activeChat.messages || [], msg]),
+        tap(x => console.log('STORE messageStream$', x)),
       );
   }
 
@@ -66,18 +68,21 @@ class Store extends EventEmitter {
   }
 
   async setActiveChat(roomId) {
-    this.state.activeChatId = roomId
+    this.state.activeChatId = roomId;
+
     this.state.activeChat = await Firestore.getChatroomById(roomId);
 
     this.getMessages(roomId);
-
+    console.log('setActiveChat', this.state.activeChat)
+    this.startMessageStream(roomId)
     this.emit('chat:loaded', this.activeChat);
   }
 
   async registerUser({ username, password }) {
-  const res =  await Firestore.addUser({ username, password, chatrooms: [Firestore.createDocumentRef(this.generalChatDocPath)] });
+    const res = await Firestore.addUser({ username, password, chatrooms: [Firestore.createDocumentRef(this.generalChatDocPath)] });
 
     this.emit('user:registered');
+
     return res;
   }
 
@@ -88,6 +93,8 @@ class Store extends EventEmitter {
       this.state.currentUser = res;
 
       await this.loadChats();
+
+      this.emit('user:loggedin');
 
       return this.state.currentUser
     }
@@ -107,6 +114,7 @@ class Store extends EventEmitter {
       }, new Map());
 
     this.state = { ...this.state, messages };
+
     return this;
   }
 
@@ -116,17 +124,18 @@ class Store extends EventEmitter {
         for (let prop in curr) {
           curr[prop] = coerceData(curr[prop])
         }
-        return map.set(curr.id, curr)
+
+        return map.set(curr.id, curr);
       }, new Map());
 
     this.state = { ...this.state, messages };
+
     return this;
   }
 
   async getMessages(chatId) {
+    // this.startMessageStream.bind(this)(chatId)
     this.state.activeChat.messages = await Firestore.getMessages(chatId);
-
-    this.startMessageStream.bind(this)(chatId)
 
     this.emit('messages:update', this.state.activeChat.messages);
   }
@@ -140,24 +149,16 @@ class Store extends EventEmitter {
     }
 
     await Firestore.addMessage(this.activeChat.id, msg);
-
-    this.getMessages(this.activeChat.id);
-
-    this.state.activeChat.messages = await Firestore.getMessages(this.activeChat.id);
-
-    return this.messages;
   }
 
   loadFromLocalStore(key) {
     return this.loadState(localStore.get(this.storeKey));
   }
 
-  get messages() { return [...this.state.activeChat.messages.values()] };
-
   get activeChat() { return this.state.activeChat };
 
   get currentUser() { return this.state.currentUser };
- 
+
   get userChats() { return this.state.currentUser.chatrooms };
 }
 

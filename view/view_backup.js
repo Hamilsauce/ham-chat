@@ -36,7 +36,7 @@ export class View extends AppObject {
 
     if (!this.#self) throw new Error('Failed to find/load a router-app class template. Class/template name: ' + name);
 
-this.init()
+    this.init()
     this.bindData();
 
     this.#selectedElement = this.dom;
@@ -64,7 +64,7 @@ this.init()
       const name = el.dataset.viewChild;
       console.log('viewRegistery.entries', viewRegistery.entries)
       console.log('el.dataset', el.dataset)
-console.log('name', name)
+      console.log('name', name)
       this.#children.set(name, viewRegistery.load(name));
       console.warn({ name, view: this.#children.get(name) });
       el.replaceWith(this.#children.get(name).dom)
